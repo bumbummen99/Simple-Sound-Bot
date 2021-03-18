@@ -1,0 +1,25 @@
+{
+  "name": "simple-sound-bot",
+  "version": "1.0.0",
+  "description": "A simple discord sound bot for music and tts.",
+  "main": "index.js",
+  "scripts": {
+    "run": "nodejs index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patrick Henninger <privat@skyraptor.eu>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@discordjs/opus": "^0.4.0",
+    "aws-sdk": "^2.867.0",
+    "chalk": "^4.1.0",
+    "discord-akairo": "^8.1.0",
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
+    "ffmpeg": "0.0.4",
+    "fluent-ffmpeg": "^2.1.2",
+    "sequelize": "^6.5.1",
+    "sqlite": "^4.0.19",
+    "ytdl-core": "^4.5.0"
+  }
+}

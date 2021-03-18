@@ -1,0 +1,6 @@
+# Package Manager
+package-lock.json
+node_modules/
+
+# Configuration
+.env
