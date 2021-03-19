@@ -1,5 +1,5 @@
-import Command from 'discord-akairo';
-import AudioClient from '../core/AudioClient.js'; 
+const { Command } = require('discord-akairo');
+const AudioClient = require('../core/AudioClient.js'); 
 
 class SummonCommand extends Command {
     constructor() {
@@ -17,4 +17,4 @@ class SummonCommand extends Command {
     }
 }
 
-module.exports = TTSCommand;
+module.exports = SummonCommand;

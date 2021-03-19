@@ -1,6 +1,6 @@
 let instance;
 
-export default class AudioClient {
+class AudioClient {
     constructor() {
         /* The current channel connection */
         this.connection = null;
@@ -43,3 +43,5 @@ export default class AudioClient {
         }
     }
 }
+
+module.exports = AudioClient;

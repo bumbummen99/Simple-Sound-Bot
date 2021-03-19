@@ -1,7 +1,6 @@
-import Akairo from "discord-akairo";
-const { AkairoClient } = Akairo;
+const { AkairoClient, CommandHandler } = require('discord-akairo');
 
-export default class Bot extends AkairoClient {
+class Bot extends AkairoClient {
     constructor() {
         const akairoOptions = {};
 
@@ -23,3 +22,4 @@ export default class Bot extends AkairoClient {
     }
 }
 
+module.exports = Bot;

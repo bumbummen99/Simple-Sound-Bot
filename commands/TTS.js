@@ -1,6 +1,6 @@
-import Command from 'discord-akairo';
-import { Polly } from 'aws-sdk';
-import AudioClient from '../core/AudioClient.js'; 
+const { Command } = require('discord-akairo');
+const { Polly } = require('aws-sdk');
+const AudioClient = require('../core/AudioClient.js'); 
 
 class TTSCommand extends Command {
     constructor() {

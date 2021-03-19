@@ -1,12 +1,14 @@
-import dotenv from 'dotenv';
-import arg from 'arg';
+const dotenv = require('dotenv');
+const arg = require('arg');
+const path = require('path');
 
 //import AWS from 'aws-sdk';
-import Logger from './core/Logger.js';
-import Bot from './Bot.js';
+const Logger = require('./core/Logger.js');
+const Bot = require('./Bot.js');
 
 /* Load package.json */
-import packageJSON from './package.json';
+const packageJSON = require('./package.json');
+const { exit } = require('process');
 
 /* Retrieve CLI arguments */
 const args = arg({
@@ -39,7 +41,7 @@ if (args['--version']) {
 }
 
 /* Load the configuration */
-const envPath = args['--env'] ?? path.resolve(process.cwd() + '.env');
+const envPath = args['--env'] ?? path.resolve(process.cwd() + '/.env');
 Logger.verbose('Bootstrap', 1, 'Loading .env from "' + envPath + '"...');
 dotenv.config({
     path: envPath,
