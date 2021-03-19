@@ -1,14 +1,12 @@
 const dotenv = require('dotenv');
 const arg = require('arg');
 const path = require('path');
+const { exit } = require('process');
 
-//import AWS from 'aws-sdk';
+const packageJSON = require('./package.json');
 const Logger = require('./core/Logger.js');
 const Bot = require('./Bot.js');
-
-/* Load package.json */
-const packageJSON = require('./package.json');
-const { exit } = require('process');
+const AudioClient = require('./core/AudioClient.js');
 
 /* Retrieve CLI arguments */
 const args = arg({
@@ -47,14 +45,27 @@ dotenv.config({
     path: envPath,
 });
 
-///* Configure AWS client */
-//AWS.config.region = process.env.AWS_REGION;
-//AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-//    IdentityPoolId: process.env.AWS_TOKEN,
-//});
+/* Configure Logger */
+const verbosity = args['--verbose'] ?? 0;
+Logger.verbose('Bootstrap', 1, 'Setting verbosity to ' + verbosity);
+Logger.setVerboseness('Bootstrap', verbosity);
+Logger.setVerboseness('Commands', verbosity);
 
 /* Initialize the Bot */
+Logger.verbose('Bootstrap', 1, 'Initializing the Bot...');
 const client = new Bot();
+
+/* Register stop listeners to shutdown gracefully */
+const shutdown = () => {
+    Logger.verbose('Bootstrap', 1, 'Received termination signal, shutting down gracefully...');
+
+    AudioClient.getInstance().disconnect();
+    client.destroy();
+
+    Logger.verbose('Bootstrap', 1, 'Shutdown complete! Bye :)');
+};
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
 
 /* Login with the provided DISCORD_BOT_TOKEN */
 client.login(process.env.DISCORD_BOT_TOKEN);

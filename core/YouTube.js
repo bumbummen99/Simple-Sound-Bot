@@ -1,5 +1,5 @@
 class YouTube {
-    static getIdFromURL() {
+    static getIdFromURL(url) {
         if (url != undefined || url != '') {
             /* Try to get the ID from the YouTube URL */
             const match = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/);

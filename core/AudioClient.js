@@ -23,7 +23,11 @@ class AudioClient {
     }
 
     async join(channel) {
+        /* Join the voice channel and wait for the connection */
         this.connection = await channel.join();
+
+        /* Set the speaking state to false initially (as nothing is playing yet) */
+        this.connection.setSpeaking(0);
     }
 
     disconnect() {
@@ -34,7 +38,11 @@ class AudioClient {
 
     play(uri) {
         if (this.connection) {
+            /* Try to play the privded URI and get the dispatcher */
             this.dispatcher = this.connection.play(uri, this.streamOptions);
+
+            /* Also update the speaking state */
+            this.connection.setSpeaking(1);
         }
     }
 

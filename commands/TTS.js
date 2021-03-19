@@ -6,6 +6,7 @@ const { Command } = require('discord-akairo');
 const AudioClient = require('../core/AudioClient.js'); 
 const PollyTTS = require('../core/PollyTTS.js');
 const Downloader = require('../core/Downloader.js');
+const Logger = require('../core/Logger.js');
 
 class TTSCommand extends Command {
     constructor() {
@@ -18,6 +19,8 @@ class TTSCommand extends Command {
         /* Get the TTS text from the message */
         const text = message.cleanContent.replace(process.env.DISCORD_BOT_COMMAND_PREFIX + 'tts ', '');
 
+        Logger.verbose('Commands', 1, '[TTS] TTS command received. Input: "' + text + '"');
+
         /* Get the text's hash to prevent downloading the same text multiple times */
         const hash = md5(text);
 
@@ -25,6 +28,7 @@ class TTSCommand extends Command {
 
         /* Generate and download the TTS audio if it does not already exist */
         if (!fs.existsSync(cachePath)) {
+            Logger.verbose('Commands', 1, '[TTS] Input is not cached, generating with AWS Polly...');
             await Downloader.get(await PollyTTS.generate(text), cachePath);
         }
 
@@ -32,6 +36,7 @@ class TTSCommand extends Command {
         const voice = AudioClient.getInstance();
 
         /* Play the generated audio file */
+        Logger.verbose('Commands', 1, '[TTS] Playing input from: "' + cachePath + '"');
         voice.play(cachePath);
 
         message.reply('Doing as you demand...');

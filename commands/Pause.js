@@ -1,8 +1,9 @@
 const { Command } = require('discord-akairo');
 
 const AudioClient = require('../core/AudioClient.js');
+const Logger = require('../core/Logger.js');
 
-class TTSCommand extends Command {
+class PauseCommand extends Command {
     constructor() {
         super('pause', {
            aliases: ['pause'] 
@@ -10,10 +11,12 @@ class TTSCommand extends Command {
     }
 
     async exec(message) {
+        Logger.verbose('Commands', 1, '[Pause] Pause command received, pausing playback...');
+
         AudioClient.getInstance().pause();
 
         message.reply('Doing as you demand...');
     }
 }
 
-module.exports = TTSCommand;
+module.exports = PauseCommand;
