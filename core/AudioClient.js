@@ -158,6 +158,9 @@ class AudioClient {
             if (!tts) {
                 this.dispatcher.on('finish', () => {
                     Logger.verbose('AudioClient', 1, 'Track finished, trying to play next in queue.');
+                    this.uri = null;
+                    this.times = [];
+                    
                     this.playNextFromQueue();
                 }); 
             }
