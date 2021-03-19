@@ -4,3 +4,7 @@ node_modules/
 
 # Configuration
 .env
+
+# Cache
+cache/tts/*.mp3
+cache/youtube/*.mp3

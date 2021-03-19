@@ -1,6 +1,11 @@
+const fs = require('fs');
+const path = require('path');
+const md5 = require('md5');
 const { Command } = require('discord-akairo');
-const { Polly } = require('aws-sdk');
+
 const AudioClient = require('../core/AudioClient.js'); 
+const PollyTTS = require('../core/PollyTTS.js');
+const Downloader = require('../core/Downloader.js');
 
 class TTSCommand extends Command {
     constructor() {
@@ -9,44 +14,28 @@ class TTSCommand extends Command {
         });
     }
 
-    exec(message) {
-        console.log('TTS 1');
-        return new Promise((resolve, reject) => {
-            try {
-                const speechParams = {
-                    OutputFormat: 'mp3',
-                    SampleRate: '22050',
-                    Text: message.cleanContent.replace(process.env.DISCORD_BOT_COMMAND_PREFIX + 'tts ', ''),
-                    TextType: 'text',
-                    VoiceId: 'Hans'
-                };
+    async exec(message) {
+        /* Get the TTS text from the message */
+        const text = message.cleanContent.replace(process.env.DISCORD_BOT_COMMAND_PREFIX + 'tts ', '');
 
-                /* Initialize Polly and Signer & set contents */
-                const signer = new Polly.Presigner(speechParams, new Polly());
-                
-                /* Create presigned URL of synthesized speech file */
-                signer.getSynthesizeSpeechUrl(speechParams, function(error, url) {
-                    if (error) {
-                        /* Reject the Promise with the received error */
-                        reject(error);
-                    } else {
-                        /* Get the AudioClient singleton */
-                        const voice = AudioClient.getInstance();
+        /* Get the text's hash to prevent downloading the same text multiple times */
+        const hash = md5(text);
 
-                        /* Play the generated audio file */
-                        voice.play(url);
-                        console.log('Played TTS URL: ' + url);                            
+        const cachePath = path.resolve(process.cwd() + '/cache/tts/' + hash + '.mp3');
 
-                        /* Resolve the Promise */
-                        resolve();
-                    }
-                });
-            } catch (e) {
-                console.log('TTS initialize error');
+        /* Generate and download the TTS audio if it does not already exist */
+        if (!fs.existsSync(cachePath)) {
+            await Downloader.get(await PollyTTS.generate(text), cachePath);
+        }
 
-                reject(e.message);
-            }
-        });
+        /* Get the AudioClient singleton */
+        const voice = AudioClient.getInstance();
+
+        /* Play the generated audio file */
+        console.log('TTS trying to play: ' + cachePath);
+        voice.play(cachePath);
+
+        message.reply('Doing as you demand...');
     }
 }
 
