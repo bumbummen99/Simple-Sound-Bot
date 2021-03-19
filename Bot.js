@@ -1,4 +1,5 @@
-import AkairoClient from 'discord-akairo';
+import Akairo from "discord-akairo";
+const { AkairoClient } = Akairo;
 
 export default class Bot extends AkairoClient {
     constructor() {

@@ -3,14 +3,16 @@
   "version": "1.0.0",
   "description": "A simple discord sound bot for music and tts.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "run": "nodejs index.js",
+    "start": "node --experimental-json-modules index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Patrick Henninger <privat@skyraptor.eu>",
   "license": "UNLICENSED",
   "dependencies": {
     "@discordjs/opus": "^0.4.0",
+    "arg": "^5.0.0",
     "aws-sdk": "^2.867.0",
     "chalk": "^4.1.0",
     "discord-akairo": "^8.1.0",
