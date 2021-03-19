@@ -1,4 +1,4 @@
-let instance;
+let instance = null;
 
 class AudioClient {
     constructor() {
@@ -15,7 +15,7 @@ class AudioClient {
     }
 
     static getInstance() {
-        if (!instance) {
+        if (instance === null) {
             instance = new AudioClient();
         }
 
@@ -26,8 +26,16 @@ class AudioClient {
         this.connection = await channel.join();
     }
 
-    async play(uri) {
-        this.dispatcher = this.connection.play(uri, this.streamOptions);
+    disconnect() {
+        if (this.connection) {
+            this.connection.disconnect();
+        }
+    }
+
+    play(uri) {
+        if (this.connection) {
+            this.dispatcher = this.connection.play(uri, this.streamOptions);
+        }
     }
 
     pause() {

@@ -10,17 +10,20 @@ class TTSCommand extends Command {
     }
 
     exec(message) {
+        console.log('TTS 1');
         return new Promise((resolve, reject) => {
             try {
-                /* Initialize Polly and Signer & set contents */
-                const signer = new Polly.Presigner({
+                const speechParams = {
                     OutputFormat: 'mp3',
                     SampleRate: '22050',
-                    Text: message.cleanContent.replace(process.env.DISCORD_BOT_COMMAND_PREFIX + 'tts'),
+                    Text: message.cleanContent.replace(process.env.DISCORD_BOT_COMMAND_PREFIX + 'tts ', ''),
                     TextType: 'text',
                     VoiceId: 'Hans'
-                }, new Polly());
+                };
 
+                /* Initialize Polly and Signer & set contents */
+                const signer = new Polly.Presigner(speechParams, new Polly());
+                
                 /* Create presigned URL of synthesized speech file */
                 signer.getSynthesizeSpeechUrl(speechParams, function(error, url) {
                     if (error) {
@@ -32,12 +35,15 @@ class TTSCommand extends Command {
 
                         /* Play the generated audio file */
                         voice.play(url);
+                        console.log('Played TTS URL: ' + url);                            
 
                         /* Resolve the Promise */
                         resolve();
                     }
                 });
             } catch (e) {
+                console.log('TTS initialize error');
+
                 reject(e.message);
             }
         });
