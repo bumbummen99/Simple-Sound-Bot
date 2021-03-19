@@ -1,7 +1,5 @@
-const fs = require('fs');
 const path = require('path');
 const md5 = require('md5');
-const ytdl = require('ytdl-core');
 
 const AbstractCommand = require('../core/abstract/AbstractCommand.js');
 const AudioClient = require('../core/AudioClient.js');
@@ -26,7 +24,7 @@ class PlayCommand extends AbstractCommand {
         if (!url.length) {
             if (AudioClient.getInstance().isPaused()) {
                 Logger.verbose('Commands', 1, '[Play] No URL provided, trying to resume playback.');
-                AudioClient.getInstance().resume();
+                await AudioClient.getInstance().resume();
             } else {
                 Logger.verbose('Commands', 1, '[Play] No URL provided and nothing to resume :(');
                 return message.reply('There is nothing to resume, please provide a valid YouTube URL to play something.');
@@ -46,18 +44,13 @@ class PlayCommand extends AbstractCommand {
 
             /* Generate the target cache path */
             const cachePath = path.resolve(process.cwd() + '/cache/youtube/' + md5(videoId) + '.mp3');
-
-            /* Download the video if the video has not already been cached locally */
-            if (!fs.existsSync(cachePath)) {
-                Logger.verbose('Commands', 1, '[Play] Video "' + videoId + '" is not cached. Downloading...');
-                ytdl(url, { quality: 'highestaudio' }).pipe(fs.createWriteStream(cachePath));
-            }
+            const video = await YouTube.download(url, cachePath);
 
             Logger.verbose('Commands', 1, '[Play] Trying to play "' + videoId + '" from path "' + cachePath + '"');
             AudioClient.getInstance().play(cachePath);
-        }
 
-        message.reply('Doing as you demand...');
+            message.reply('Now playing "' + video.name + '".');
+        }
     }
 }
 

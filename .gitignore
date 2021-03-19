@@ -8,3 +8,4 @@ node_modules/
 # Cache
 cache/tts/*.mp3
 cache/youtube/*.mp3
+cahe/*.sqlite

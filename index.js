@@ -52,6 +52,7 @@ Logger.setVerboseness('Bootstrap', verbosity);
 Logger.setVerboseness('Commands', verbosity);
 Logger.setVerboseness('AudioClient', verbosity);
 Logger.setVerboseness('CommandHelper', verbosity);
+Logger.setVerboseness('YouTube', verbosity);
 Logger.verbose('Bootstrap', 1, 'Set verosity to "' + verbosity + '"');
 
 /* Initialize the Bot */

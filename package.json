@@ -22,6 +22,10 @@
     "md5": "^2.3.0",
     "sequelize": "^6.5.1",
     "sqlite": "^4.0.19",
+    "sqlite3": "^5.0.2",
     "ytdl-core": "^4.5.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.2.0"
   }
 }

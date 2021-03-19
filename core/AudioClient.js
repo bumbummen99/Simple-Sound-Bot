@@ -1,4 +1,7 @@
+const { Op } = require('sequelize');
+
 const Logger = require('./Logger.js');
+const db = require('../models/index.js');
 
 let instance = null;
 
@@ -14,6 +17,8 @@ class AudioClient {
         this.uri = null;
 
         this.times = [];
+
+        this.queueID = null;
 
         /* The stream options cache to keep options consitent between dispatchers */
         this.streamOptions = {
@@ -62,18 +67,80 @@ class AudioClient {
             const resumeTime = this.sumTime();
 
             Logger.verbose('AudioClient', 1, 'Playing TTS.');
-            this.play(uri);
+            this.play(uri, true);
 
             this.dispatcher.on('finish', () => {
                 if (resume) {
                     Logger.verbose('AudioClient', 1, 'TTS finished! Resuming previous dispatcher at time "' + resumeTime + '"...');
-                    this.play(resumeURI, resumeTime);
+                    this.play(resumeURI, false, resumeTime);
                 }
             }); 
         }
     }
 
-    play(uri, time = null) {
+    async queue(uri, name) {
+        Logger.verbose('Commands', 1, '[AudioClient] Adding URI "' + uri + '" with name "' + name + '" to Queue...');
+
+        /* Create the model in the database */
+        await db.Queue.create({
+            path: uri,
+            name: name,
+        });
+    }
+
+    async skip() {
+        Logger.verbose('Commands', 1, '[AudioClient] Skipping current track.');
+        this.pause();
+
+        await this.playNextFromQueue();
+    }
+
+    async playNextFromQueue() {
+        this.streamOptions
+        let entry = null;
+        if (this.queueID !== null) {
+            /* Remove finished queue item */
+            await db.Queue.destroy({
+                where: {
+                    id: this.queueID,
+                }
+            });
+
+            /* Try to get next queue item */
+            const entries = await db.Queue.findAll({
+                limit: 1,
+                where: {
+                    id: {
+                        [Op.gt]: this.queueID
+                    }
+                }
+            });
+            if (entries.length) {
+                entry = entries[0];
+            }         
+        } else {
+            /* Get first queue item */
+            entry = await db.Queue.findOne();
+        }
+        
+        /* Set and play the item if there is any */
+        if (entry) {
+            Logger.verbose('Commands', 1, '[AudioClient] Trying to play queued entry ' + entry.id + ' with path ' + entry.path);
+            this.queueID = entry.id;
+            this.play(entry.path);
+        }
+    }
+
+
+    clearQueue() {
+        /* Remove all items from queue */
+        db.Queue.destroy({
+            where: {},
+            truncate: true
+        })
+    }
+
+    play(uri, tts = false, time = null) {
         if (this.connection) {
             /* Try to play the privded URI and get the dispatcher */
             this.dispatcher = this.connection.play(uri, {...this.streamOptions, ...{seek: time ? time / 1000 : 0}});
@@ -87,6 +154,13 @@ class AudioClient {
 
             /* Also update the speaking state */
             this.connection.setSpeaking(1);
+
+            if (!tts) {
+                this.dispatcher.on('finish', () => {
+                    Logger.verbose('AudioClient', 1, 'Track finished, trying to play next in queue.');
+                    this.playNextFromQueue();
+                }); 
+            }
         }
     }
 
@@ -100,12 +174,13 @@ class AudioClient {
         }
     }
 
-    resume() {
+    async resume() {
         if (this.isPaused()) {
             Logger.verbose('AudioClient', 1, 'Trying to resume dispatcher...');
             this.dispatcher.resume();
         } else {
-            Logger.verbose('AudioClient', 1, 'Could not resume dispatcher it is not paused.');
+            Logger.verbose('AudioClient', 1, 'Could not resume dispatcher it is not paused, try playing from Queue...');
+            await this.playNextFromQueue();
         }
     }
 
