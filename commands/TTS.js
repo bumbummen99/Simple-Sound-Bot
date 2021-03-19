@@ -32,7 +32,6 @@ class TTSCommand extends Command {
         const voice = AudioClient.getInstance();
 
         /* Play the generated audio file */
-        console.log('TTS trying to play: ' + cachePath);
         voice.play(cachePath);
 
         message.reply('Doing as you demand...');
