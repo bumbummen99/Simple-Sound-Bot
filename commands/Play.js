@@ -2,22 +2,23 @@ const fs = require('fs');
 const path = require('path');
 const md5 = require('md5');
 const ytdl = require('ytdl-core');
-const { Command } = require('discord-akairo');
 
+const AbstractCommand = require('../core/abstract/AbstractCommand.js');
 const AudioClient = require('../core/AudioClient.js');
 const YouTube = require('../core/YouTube.js');
+const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
 
-class PlayCommand extends Command {
+class PlayCommand extends AbstractCommand {
     constructor() {
         super('play', {
            aliases: ['play'] 
         });
     }
 
-    async exec(message) {
+    async childExec(message) {
         /* Get YouTube URLfrom the message */
-        const url = message.cleanContent.replace(process.env.DISCORD_BOT_COMMAND_PREFIX + 'play ', '');
+        const url = CommandHelper.getCleared(this.id, message);
 
         Logger.verbose('Commands', 1, '[Play] Play command received. Input: "' + url + '"');
 

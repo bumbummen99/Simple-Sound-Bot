@@ -33,6 +33,7 @@ if (args['--help']) {
 }
 
 /* Show version if requested */
+process.env.SOUND_BOT_VERSION = packageJSON.version;
 if (args['--version']) {
     console.log(packageJSON.version);
     exit(0);
@@ -47,9 +48,11 @@ dotenv.config({
 
 /* Configure Logger */
 const verbosity = args['--verbose'] ?? 0;
-Logger.verbose('Bootstrap', 1, 'Setting verbosity to ' + verbosity);
 Logger.setVerboseness('Bootstrap', verbosity);
 Logger.setVerboseness('Commands', verbosity);
+Logger.setVerboseness('AudioClient', verbosity);
+Logger.setVerboseness('CommandHelper', verbosity);
+Logger.verbose('Bootstrap', 1, 'Set verosity to "' + verbosity + '"');
 
 /* Initialize the Bot */
 Logger.verbose('Bootstrap', 1, 'Initializing the Bot...');
@@ -63,9 +66,12 @@ const shutdown = () => {
     client.destroy();
 
     Logger.verbose('Bootstrap', 1, 'Shutdown complete! Bye :)');
+    exit(0);
 };
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);
 
 /* Login with the provided DISCORD_BOT_TOKEN */
 client.login(process.env.DISCORD_BOT_TOKEN);
+
+Logger.verbose('Bootstrap', 1, 'Bot successfully started!');

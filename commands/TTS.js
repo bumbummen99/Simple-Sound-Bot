@@ -1,23 +1,24 @@
 const fs = require('fs');
 const path = require('path');
 const md5 = require('md5');
-const { Command } = require('discord-akairo');
 
+const AbstractCommand = require('../core/abstract/AbstractCommand.js');
 const AudioClient = require('../core/AudioClient.js'); 
 const PollyTTS = require('../core/PollyTTS.js');
 const Downloader = require('../core/Downloader.js');
+const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
 
-class TTSCommand extends Command {
+class TTSCommand extends AbstractCommand {
     constructor() {
         super('tts', {
            aliases: ['tts'] 
         });
     }
 
-    async exec(message) {
+    async childExec(message) {
         /* Get the TTS text from the message */
-        const text = message.cleanContent.replace(process.env.DISCORD_BOT_COMMAND_PREFIX + 'tts ', '');
+        const text = CommandHelper.getCleared(this.id, message);
 
         Logger.verbose('Commands', 1, '[TTS] TTS command received. Input: "' + text + '"');
 
@@ -37,7 +38,7 @@ class TTSCommand extends Command {
 
         /* Play the generated audio file */
         Logger.verbose('Commands', 1, '[TTS] Playing input from: "' + cachePath + '"');
-        voice.play(cachePath);
+        voice.tts(cachePath);
 
         message.reply('Doing as you demand...');
     }
