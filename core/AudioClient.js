@@ -44,11 +44,21 @@ class AudioClient {
         }
     }
 
+    resume() {
+        if (this.isPaused()) {
+            this.dispatcher.resume();
+        }
+    }
+
     volume(volume) {
         this.streamOptions.volume = volume;
         if (this.dispatcher) {
             this.dispatcher.setVolume(volume);
         }
+    }
+
+    isPaused() {
+        return this.dispatcher && this.dispatcher.paused;
     }
 }
 
