@@ -54,7 +54,7 @@ class YouTube {
     }
 
     static ytdlPromised(url, path) {
-        return new Promise(resolve, reject => {
+        return new Promise((resolve, reject) => {
             const stream = ytdl(url, { quality: 'highestaudio' });
             stream.pipe(fs.createWriteStream(path));
             stream.on('finish', () => {
