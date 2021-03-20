@@ -95,11 +95,15 @@ class AudioClient {
         Logger.verbose('Commands', 1, '[AudioClient] Skipping current track.');
         this.pause();
 
-        await this.playNextFromQueue();
+        await this.next();
     }
 
-    async playNextFromQueue() {
-        this.streamOptions
+    async next() {
+        if (this.repeat) {
+            Logger.verbose('AudioClient', 1, 'Repeating current track.');
+            return this.play(this.uri);
+        }
+
         let entry = null;
         if (this.queueID !== null) {
             /* Remove finished queue item */
@@ -163,14 +167,7 @@ class AudioClient {
                 this.dispatcher.on('finish', () => {
                     this.finished = true;
 
-                    if (this.repeat) {
-                        Logger.verbose('AudioClient', 1, 'Track finished, repeating.');
-                        this.play(uri);
-                    } else {
-                        Logger.verbose('AudioClient', 1, 'Track finished, trying to play next in queue.');
-                        this.playNextFromQueue();
-                    }
-                    
+                    this.next();
                 }); 
             }
         }
@@ -192,7 +189,7 @@ class AudioClient {
             this.dispatcher.resume();
         } else {
             Logger.verbose('AudioClient', 1, 'Could not resume dispatcher it is not paused, try playing from Queue...');
-            await this.playNextFromQueue();
+            await this.next();
         }
     }
 
