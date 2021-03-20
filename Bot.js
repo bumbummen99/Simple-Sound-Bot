@@ -42,6 +42,7 @@ class Bot extends AkairoClient {
                 }
             }
 
+            /* Check if a user joined a channeö */
             if(newState.channel && (!oldState.channel || newState.channel.id !== oldState.channel.id)) {
                 Logger.verbose('Bot', 2, 'User joined a channel.');
 
