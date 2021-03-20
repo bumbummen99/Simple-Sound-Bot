@@ -165,7 +165,7 @@ class AudioClient {
 
                     if (this.repeat) {
                         Logger.verbose('AudioClient', 1, 'Track finished, repeating.');
-                        this.play(url);
+                        this.play(uri);
                     } else {
                         Logger.verbose('AudioClient', 1, 'Track finished, trying to play next in queue.');
                         this.playNextFromQueue();
