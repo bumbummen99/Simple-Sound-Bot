@@ -61,7 +61,7 @@ class AudioClient {
 
     tts(uri) {
         if (this.connection) {
-            const resume = this.dispatcher ? this.isPaused() && !this.finished : false;
+            const resume = this.dispatcher ? !this.finished : false;
             if (resume) {
                 Logger.verbose('AudioClient', 1, 'TTS detected previous dispatcher, pausing...');
                 this.pause();
@@ -73,8 +73,9 @@ class AudioClient {
             this.play(uri, true);
 
             this.dispatcher.on('finish', () => {
+                Logger.verbose('AudioClient', 1, 'TTS finished!');
                 if (resume) {
-                    Logger.verbose('AudioClient', 1, 'TTS finished! Resuming previous dispatcher at time "' + resumeTime + '"...');
+                    Logger.verbose('AudioClient', 1, 'Resuming previous dispatcher at time "' + resumeTime + '"...');
                     this.play(resumeURI, false, resumeTime);
                 }
             }); 
