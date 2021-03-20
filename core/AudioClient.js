@@ -25,6 +25,8 @@ class AudioClient {
         this.streamOptions = {
             volume: 1,
         }
+
+        this.repeat = false;
     }
 
     static getInstance() {
@@ -163,7 +165,12 @@ class AudioClient {
 
                     this.finished = true;
 
-                    this.playNextFromQueue();
+                    if (this.repeat) {
+                        this.play(url);
+                    } else {
+                        this.playNextFromQueue();
+                    }
+                    
                 }); 
             }
         }
@@ -194,6 +201,11 @@ class AudioClient {
         if (this.dispatcher) {
             this.dispatcher.setVolume(volume);
         }
+    }
+
+    toggleRepeat() {
+        this.repeat = !this.repeat;
+        return this.repeat;
     }
 
     isPaused() {
