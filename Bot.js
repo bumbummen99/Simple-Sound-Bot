@@ -24,9 +24,9 @@ class Bot extends AkairoClient {
 
         /* Add handler to track channel join/leave eventss */
         this.on('voiceStateUpdate', (oldState, newState) => {  
-            Logger.verbose('Bot', 1, 'Detected voiceStateUpdate event.');
+            Logger.verbose('Bot', 2, 'Detected voiceStateUpdate event.');
 
-            Logger.verbose('Bot', 2, 'Event data: ' + JSON.stringify(newState));
+            Logger.verbose('Bot', 3, 'Event data: ' + JSON.stringify(newState));
 
             /* Check if the user left a channel */
             if (oldState.channel && (!newState.channel || newState.channel.id !== oldState.channel.id)){
@@ -35,7 +35,7 @@ class Bot extends AkairoClient {
                 /* Save power and pause playback if no one is in the channel */
                 if (oldState.channel.id === AudioClient.getInstance().getVoiceChannel()) {
                     if (!oldState.channel.members.length) {
-                        Logger.verbose('Bot', 2, 'User left bot channel and channel is empty, pausing playback.');
+                        Logger.verbose('Bot', 1, 'User left bot channel and channel is empty, pausing playback.');
 
                         AudioClient.getInstance().pause();
                     }
