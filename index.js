@@ -49,6 +49,7 @@ dotenv.config({
 /* Configure Logger */
 const verbosity = args['--verbose'] ?? 0;
 Logger.setVerboseness('Bootstrap', verbosity);
+Logger.setVerboseness('Bot', verbosity);
 Logger.setVerboseness('Commands', verbosity);
 Logger.setVerboseness('AudioClient', verbosity);
 Logger.setVerboseness('CommandHelper', verbosity);

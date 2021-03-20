@@ -161,13 +161,13 @@ class AudioClient {
 
             if (!tts) {
                 this.dispatcher.on('finish', () => {
-                    Logger.verbose('AudioClient', 1, 'Track finished, trying to play next in queue.');
-
                     this.finished = true;
 
                     if (this.repeat) {
+                        Logger.verbose('AudioClient', 1, 'Track finished, repeating.');
                         this.play(url);
                     } else {
+                        Logger.verbose('AudioClient', 1, 'Track finished, trying to play next in queue.');
                         this.playNextFromQueue();
                     }
                     
@@ -218,6 +218,14 @@ class AudioClient {
             sum += time;
         }
         return sum;
+    }
+
+    getVoiceChannel() {
+        if (this.connection) {
+            return this.connection.channel.id;
+        }
+
+        return null;
     }
 }
 
