@@ -12,6 +12,7 @@ class AudioClient {
 
         /* The current audio play dispatcher */
         this.dispatcher = null;
+        this.finished = false;
 
         /* The current url */
         this.uri = null;
@@ -58,7 +59,7 @@ class AudioClient {
 
     tts(uri) {
         if (this.connection) {
-            const resume = this.dispatcher ? !this.isPaused() : false;
+            const resume = this.dispatcher ? this.isPaused() && !this.finished : false;
             if (resume) {
                 Logger.verbose('AudioClient', 1, 'TTS detected previous dispatcher, pausing...');
                 this.pause();
@@ -144,6 +145,7 @@ class AudioClient {
         if (this.connection) {
             /* Try to play the privded URI and get the dispatcher */
             this.dispatcher = this.connection.play(uri, {...this.streamOptions, ...{seek: time ? time / 1000 : 0}});
+            this.finished = false;
 
             /* Set the uri */
             this.uri = uri;
@@ -158,9 +160,9 @@ class AudioClient {
             if (!tts) {
                 this.dispatcher.on('finish', () => {
                     Logger.verbose('AudioClient', 1, 'Track finished, trying to play next in queue.');
-                    this.uri = null;
-                    this.times = [];
-                    
+
+                    this.finished = true;
+
                     this.playNextFromQueue();
                 }); 
             }
