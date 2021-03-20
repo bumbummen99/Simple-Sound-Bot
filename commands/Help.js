@@ -16,6 +16,7 @@ ${process.env.DISCORD_BOT_COMMAND_PREFIX}summon - Summons the bot to your curren
 ${process.env.DISCORD_BOT_COMMAND_PREFIX}leave - Makes the bot leave the audio channel it is currently connected to.
 ${process.env.DISCORD_BOT_COMMAND_PREFIX}tts - Text to speech, no explanation needed
 ${process.env.DISCORD_BOT_COMMAND_PREFIX}play - Plays a youtube video URL, overrides current track. If no URL is provided it will resume the paused track.
+${process.env.DISCORD_BOT_COMMAND_PREFIX}repeat - Toggles the repeat functionailty. If enabled, the same track will play over and over.
 ${process.env.DISCORD_BOT_COMMAND_PREFIX}queue - Queues a youtube video URL
 ${process.env.DISCORD_BOT_COMMAND_PREFIX}skip - Skips the current track
 ${process.env.DISCORD_BOT_COMMAND_PREFIX}volume - sets the volume, use values like "0.5", "1", "50" or "100".
