@@ -64,10 +64,9 @@ We are always open for contributions and pull requests. If you want to join the 
 
 # Donate
 If you like this project and you want to donate, you can do so below:
-https://btcpay.sendcrypto.eu/api/v1/invoices?storeId=D7Ej1qPs95JsBtBqPQYcVFwRXqAuVqECu4QWsyNQGQSj&price=10¤cy=USD
 
 <p align="center">
-    <a href="https://btcpay.sendcrypto.eu/api/v1/invoices?storeId=D7Ej1qPs95JsBtBqPQYcVFwRXqAuVqECu4QWsyNQGQSj&price=10¤cy=USD" target="_blank">
-        <img align="center" alt="Squad RCON PHP Logo" src="hhttps://btcpay.sendcrypto.eu/img/paybutton/pay.svg">
+    <a href="https://btcpay.sendcrypto.eu/api/v1/invoices?storeId=D7Ej1qPs95JsBtBqPQYcVFwRXqAuVqECu4QWsyNQGQSj&price=10¤cy=USD">
+        <img alt="Pay with BTCPay" src="https://btcpay.sendcrypto.eu/img/paybutton/pay.svg">
     </a>
 </p>
