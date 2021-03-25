@@ -1,5 +1,5 @@
 # Simple Sound-Bot
-A simple sound bot for Discord to play music and read text using text to speech.
+Yes, another Discord music bot! But this one is supposed to be simple and to allow you to play music and text using text to speech. It also does have some extra functionality like reading Wikipedia articles.
 
 # Features
 - [x] Simple YouTube-Audio player with queue and repeat
@@ -58,3 +58,16 @@ The software will by default hide unecessary log outputs. To control the verbosi
 ```
 npm run start -- --vvvv
 ```
+
+# Contribute
+We are always open for contributions and pull requests. If you want to join the project and become a maintainer please feel free to contact me.
+
+# Donate
+If you like this project and you want to donate, you can do so below:
+https://btcpay.sendcrypto.eu/api/v1/invoices?storeId=D7Ej1qPs95JsBtBqPQYcVFwRXqAuVqECu4QWsyNQGQSj&price=10¤cy=USD
+
+<p align="center">
+    <a href="https://btcpay.sendcrypto.eu/api/v1/invoices?storeId=D7Ej1qPs95JsBtBqPQYcVFwRXqAuVqECu4QWsyNQGQSj&price=10¤cy=USD" target="_blank">
+        <img align="center" alt="Squad RCON PHP Logo" src="hhttps://btcpay.sendcrypto.eu/img/paybutton/pay.svg">
+    </a>
+</p>
