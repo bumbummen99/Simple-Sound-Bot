@@ -11,7 +11,7 @@ class PollyTTS {
 
         /* Generate and download the TTS audio if it does not already exist */
         if (!fs.existsSync(path)) {
-            Logger.verbose('PollyTTS', 1, 'Input is not cached, generating with AWS Polly...');
+            Logger.verbose('PollyTTS', 1, 'Input is not cached, generating with AWS Polly...', 'blueBright');
             await Downloader.get(await PollyTTS._generator(text), path);
         }
 

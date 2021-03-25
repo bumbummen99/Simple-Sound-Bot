@@ -31,7 +31,7 @@ class YouTube {
         });
 
         if (!video) {
-            Logger.verbose('Commands', 1, '[YouTube] Video "' + id + '" not in database, retrieving information...');
+            Logger.verbose('Commands', 1, '[YouTube] Video "' + id + '" not in database, retrieving information...', 'blueBright');
 
             /* Fetch the video info with youtube dl */
             const info = await ytdl.getInfo(url);
@@ -46,7 +46,7 @@ class YouTube {
         }
 
         if (!fs.existsSync(YouTube.getCachePath(id))) {
-            Logger.verbose('Commands', 1, '[YouTube] Video "' + id + '" is not cached. Downloading...');
+            Logger.verbose('Commands', 1, '[YouTube] Video "' + id + '" is not cached. Downloading...', 'blueBright');
             await YouTube.ytdlPromised(url, YouTube.getCachePath(id));
         }
 
@@ -61,6 +61,8 @@ class YouTube {
                 resolve()
             });
             stream.on('error', e => {
+                Logger.verbose('Commands', 1, '[YouTube] YouTubeDL failed, exception: "' + e + '"', 'red');
+
                 reject(e)
             })
         });

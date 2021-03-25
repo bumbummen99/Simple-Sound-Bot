@@ -189,7 +189,7 @@ class AudioClient {
             Logger.verbose('AudioClient', 1, 'Trying to resume dispatcher...');
             this.dispatcher.resume();
         } else {
-            Logger.verbose('AudioClient', 1, 'Could not resume dispatcher it is not paused, try playing from Queue...');
+            Logger.verbose('AudioClient', 1, 'Could not resume dispatcher it is not paused, try playing from Queue...', 'blueBright');
             await this.next();
         }
     }

@@ -51,12 +51,12 @@ const WikiPedia = require('./core/Wikipedia');
 
     /* Configure Logger */
     const verbosity = args['--verbose'] ?? 0;
-    Logger.setVerboseness('Bootstrap', verbosity);
-    Logger.setVerboseness('Bot', verbosity);
-    Logger.setVerboseness('Commands', verbosity);
-    Logger.setVerboseness('AudioClient', verbosity);
-    Logger.setVerboseness('CommandHelper', verbosity);
-    Logger.setVerboseness('YouTube', verbosity);
+    Logger.setVerboseness('Bootstrap', verbosity).setModuleColor('Bootstrap', 'greenBright');
+    Logger.setVerboseness('Bot', verbosity).setModuleColor('Bot', 'grey');
+    Logger.setVerboseness('Commands', verbosity).setModuleColor('Commands', 'green');
+    Logger.setVerboseness('AudioClient', verbosity).setModuleColor('AudioClient', 'blue');
+    Logger.setVerboseness('CommandHelper', verbosity).setModuleColor('CommandHelper', 'grey');
+    Logger.setVerboseness('YouTube', verbosity).setModuleColor('YouTube', 'blue');
     Logger.verbose('Bootstrap', 1, 'Set verosity to "' + verbosity + '"');
 
     /* Configure Wikipedia */

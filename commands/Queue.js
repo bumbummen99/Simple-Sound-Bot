@@ -27,7 +27,7 @@ class QueueCommand extends AbstractCommand {
 
             /* Verify that we have the videoID and thereby a valid YouTube URL */
             if (!videoId) {
-                Logger.verbose('Commands', 1, '[Queue] Provided URL is invalid. URL: "' + url + '"');
+                Logger.verbose('Commands', 1, '[Queue] Provided URL is invalid. URL: "' + url + '"', 'yellow');
                 return message.reply('That is not a valid YouTube URl!')
             }
 

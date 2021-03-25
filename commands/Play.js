@@ -26,7 +26,7 @@ class PlayCommand extends AbstractCommand {
                 Logger.verbose('Commands', 1, '[Play] No URL provided, trying to resume playback.');
                 await AudioClient.getInstance().resume();
             } else {
-                Logger.verbose('Commands', 1, '[Play] No URL provided and nothing to resume :(');
+                Logger.verbose('Commands', 1, '[Play] No URL provided and nothing to resume :(', 'yellow');
                 return message.reply('There is nothing to resume, please provide a valid YouTube URL to play something.');
             }
         } else {
@@ -36,7 +36,7 @@ class PlayCommand extends AbstractCommand {
 
             /* Verify that we have the videoID and thereby a valid YouTube URL */
             if (!videoId) {
-                Logger.verbose('Commands', 1, '[Play] Provided URL is invalid. URL: "' + url + '"');
+                Logger.verbose('Commands', 1, '[Play] Provided URL is invalid. URL: "' + url + '"', 'yellow');
                 return message.reply('That is not a valid YouTube URl!')
             }
 
