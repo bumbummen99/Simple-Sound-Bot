@@ -66,7 +66,7 @@ We are always open for contributions and pull requests. If you want to join the 
 If you like this project and you want to donate, you can do so below:
 
 <p align="center">
-    <a href="https://btcpay.sendcrypto.eu/api/v1/invoices?storeId=D7Ej1qPs95JsBtBqPQYcVFwRXqAuVqECu4QWsyNQGQSj&price=10¤cy=USD">
+    <a href="https://btcpay.sendcrypto.eu/api/v1/invoices?storeId=D7Ej1qPs95JsBtBqPQYcVFwRXqAuVqECu4QWsyNQGQSj&price=10&currency=EUR">
         <img alt="Pay with BTCPay" src="https://btcpay.sendcrypto.eu/img/paybutton/pay.svg">
     </a>
 </p>
