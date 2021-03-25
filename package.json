@@ -4,8 +4,7 @@
   "description": "A simple discord sound bot for music and tts.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "author": "Patrick Henninger <privat@skyraptor.eu>",
   "license": "UNLICENSED",
@@ -23,6 +22,7 @@
     "sequelize": "^6.5.1",
     "sqlite": "^4.0.19",
     "sqlite3": "^5.0.2",
+    "wikipedia": "^1.0.4",
     "ytdl-core": "^4.5.0"
   },
   "devDependencies": {

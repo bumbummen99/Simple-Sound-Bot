@@ -1,7 +1,24 @@
 const { Polly } = require('aws-sdk');
+const md5 = require('md5');
+const fs = require('fs');
+const path = require('path');
+const Downloader = require('./Downloader');
+const Logger = require('./Logger');
 
 class PollyTTS {
-    static generate(text) {
+    static async generate(text) {
+        const path = PollyTTS.getCachePath(text);
+
+        /* Generate and download the TTS audio if it does not already exist */
+        if (!fs.existsSync(path)) {
+            Logger.verbose('PollyTTS', 1, 'Input is not cached, generating with AWS Polly...');
+            await Downloader.get(await PollyTTS._generator(text), path);
+        }
+
+        return path;
+    }
+
+    static _generator(text) {
         return new Promise((resolve, reject) => {
             try {
                 const speechParams = {
@@ -29,6 +46,10 @@ class PollyTTS {
                 reject(e.message);
             }
         });
+    }
+
+    static getCachePath(data) {
+        return path.resolve(process.cwd() + '/cache/tts/' + md5(data) + '.mp3');
     }
 }
 
