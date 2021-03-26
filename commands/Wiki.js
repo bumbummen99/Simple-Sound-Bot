@@ -23,12 +23,12 @@ class WikiCommand extends AbstractCommand {
         /* Post an embed with the data */
         message.reply({embed: {
             color: 3447003,
+            url: pageData.url,
             title: (pageData.title ? pageData.title : null) ?? text,
-            thumbnail: {
+            image: {
                 url: pageData.image,
             },
-            url: pageData.url,
-            description: String.excerpt(pageData.intro, 2048),
+            description: String.excerpt(pageData.extract, 2048),
             timestamp: new Date(),
           }
         });

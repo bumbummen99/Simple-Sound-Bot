@@ -52,6 +52,7 @@ class WikiPedia {
                 url: page.fullurl,
                 title: page.title,
                 image: (summary.originalimage ? summary.originalimage.source : null) ?? null,
+                extract: summary.extract,
                 intro: intro,
                 content: content,
             };
