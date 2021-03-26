@@ -53,7 +53,7 @@ docker run -v ~/.aws:/root/.aws -v ./cache:/root/simple-sound-bot/cache skyrpato
 ### Docker Compose
 You can also use the provided compose file by using this command. This will automatically load the .env into the containers Environment.
 ```
-docker-compose up
+export CMD_ARGUMENTS="-vvvv" && docker-compose up
 ```
 
 ## Manual
