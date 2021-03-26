@@ -45,7 +45,7 @@ Sets the volume, use values like "0.5", "1", "50" or "100".
 ## Docker
 Simple-Spound-Bot provides an automatically generated docker image that you can easily use.
 
-## Docker CLI
+### Docker CLI
 To use it with plain `docker` commands, simply install Docker for your operating system of choice and run the following command. Make sure to pass your environmenr variables!
 ```
 docker run -v ~/.aws:/root/.aws -v ./cache:/root/simple-sound-bot/cache skyrpator/simple-sound-bot:latest
