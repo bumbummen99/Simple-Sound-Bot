@@ -1,7 +1,10 @@
 version: "3.8"
 services:
   simple-sound-bot:
-    image: skyraptor/simple-sound-bot:latest
+    build: .
     volumes:
       - ./cache:/root/simple-sound-bot/cache
       - ~/.aws:/root/.aws
+    env_file: .env
+    command: npm run start -- $${CMD_ARGUMENTS}
+    
