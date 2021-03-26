@@ -13,5 +13,8 @@ WORKDIR /root/simple-sound-bot/
 # Install dependencies (if not installed)
 RUN npm install
 
+# Allow for overriding the CMD_ARGUMENTS
+ENV CMD_ARGUMENTS ""
+
 # Start the bot
-CMD [ "npx", "sequelize", "db:migrate", "&&", "npm", "run", "start" ]
+CMD [ "sh", "-c", "npx sequelize db:migrate && npm run start -- ${CMD_ARGUMENTS}" ]
