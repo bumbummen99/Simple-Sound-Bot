@@ -60,8 +60,9 @@ npm run start -- --vvvv
 ```
 
 # Thanks
-- [Discord Akairo](https://github.com/discord-akairo/discord-akairo) - The Bot-Framework wrapper around discord.js.
-- [SquadJS](https://github.com/Thomas-Smyth/SquadJS) - Inspiration for the Logger class.
+- [Discord Akairo](https://github.com/discord-akairo/discord-akairo) - For the wonderful bot wrapper around discord.js.
+- [SquadJS](https://github.com/Thomas-Smyth/SquadJS) - For the inspiration and basis for the Logger class.
+- [Gabriel Tanner](https://gabrieltanner.org/) - For his great guide on creating discord music bots.
 
 # Collaborators
 
