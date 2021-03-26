@@ -13,6 +13,9 @@ WORKDIR /root/simple-sound-bot/
 # Install dependencies (if not installed)
 RUN npm install --no-dev
 
+# Fix the npm global command prefix
+RUN npm config set prefix /usr/local
+
 # Also install sequelize globally so we can migrate
 RUN npm i -g sequelize-cli
 
