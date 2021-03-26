@@ -59,15 +59,22 @@ The software will by default hide unecessary log outputs. To control the verbosi
 npm run start -- --vvvv
 ```
 
-# Contribute
-We are always open for contributions and pull requests. If you want to join the project and become a maintainer please feel free to contact me.
-
 # Thanks
 - [Discord Akairo](https://github.com/discord-akairo/discord-akairo) - The Bot-Framework wrapper around discord.js.
 - [SquadJS](https://github.com/Thomas-Smyth/SquadJS) - Inspiration for the Logger class.
 
-# Donate
-If you like this project and you want to donate, you can do so below:
+# Collaborators
+
+<!-- readme: collaborators -start -->
+<!-- readme: collaborators -end -->
+
+# Contributors
+
+<!-- readme: contributors -start -->
+<!-- readme: contributors -end -->
+
+# Support
+If you like this project and you want to support me, you can do so below:
 
 <p align="center">
     <a href="https://btcpay.sendcrypto.eu/api/v1/invoices?storeId=D7Ej1qPs95JsBtBqPQYcVFwRXqAuVqECu4QWsyNQGQSj&price=10&currency=EUR">

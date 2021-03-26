@@ -11,4 +11,4 @@ WORKDIR /root/simple-sound-bot/
 RUN npm install --no-dev
 
 # Start the bot
-CMD [ "npm", "run", "start" ]
+CMD [ "sequelize", "db:migrate", "&&", "npm", "run", "start" ]
