@@ -41,6 +41,22 @@ Skips the current playback, will play the next track in the queue (if there is o
 Sets the volume, use values like "0.5", "1", "50" or "100".
 
 # Setup
+
+## Docker
+Simple-Spound-Bot provides an automatically generated docker image that you can easily use.
+
+## Docker CLI
+To use it with plain `docker` commands, simply install Docker for your operating system of choice and run the following command. Make sure to pass your environmenr variables!
+```
+docker run -v ~/.aws:/root/.aws -v ./cache:/root/simple-sound-bot/cache skyrpator/simple-sound-bot:latest
+```
+### Docker Compose
+You can also use the provided compose file by using this command. This will automatically load the .env into the containers Environment.
+```
+docker-compose up
+```
+
+## Manual
 Simply clone the repository locally. Next, copy the `.env.example` to `.env` and adjust the configuration to your needs. Alternatively you can also empty this file and pass those values to nodes environment directly.
 
 Next simply run:

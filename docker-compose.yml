@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  simple-sound-bot:
+    image: skyraptor/simple-sound-bot:latest
+    volumes:
+      - ./cache:/root/simple-sound-bot/cache
+      - ~/.aws:/root/.aws
