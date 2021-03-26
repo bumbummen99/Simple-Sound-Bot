@@ -13,5 +13,8 @@ WORKDIR /root/simple-sound-bot/
 # Install dependencies (if not installed)
 RUN npm install --no-dev
 
+# Also install sequelize globally so we can migrate
+RUN npm i -g sequelize-cli
+
 # Start the bot
 CMD [ "sequelize", "db:migrate", "&&", "npm", "run", "start" ]
