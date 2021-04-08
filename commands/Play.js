@@ -1,13 +1,9 @@
-const path = require('path');
-const md5 = require('md5');
-
-const AbstractCommand = require('../core/Commands/AbstractCommand.js');
+const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 const AudioClient = require('../core/AudioClient/AudioClient.js');
-const YouTube = require('../core/YouTube.js');
 const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
 
-class PlayCommand extends AbstractCommand {
+class PlayCommand extends PlayerCommand {
     constructor() {
         super('play', {
            aliases: ['play'] 
@@ -16,40 +12,33 @@ class PlayCommand extends AbstractCommand {
 
     async childExec(message) {
         /* Get YouTube URLfrom the message */
-        const url = CommandHelper.getCleared(this.id, message);
+        const input = CommandHelper.getCleared(this.id, message);
 
-        Logger.verbose('Commands', 1, '[Play] Play command received. Input: "' + url + '"');
+        Logger.verbose('Commands', 1, '[Play] Play command received. Input: "' + input + '"');
 
         /* If no URL has been supplied we have to check if the AudioClient is paused and can be resumed */
-        if (!url.length) {
+        if (!input.length) {
             if (AudioClient.getInstance().isPaused()) {
-                Logger.verbose('Commands', 1, '[Play] No URL provided, trying to resume playback.');
+                Logger.verbose('Commands', 1, '[Play] No input provided, trying to resume playback.');
                 await AudioClient.getInstance().resume();
             } else {
-                Logger.verbose('Commands', 1, '[Play] No URL provided and nothing to resume :(', 'yellow');
-                return message.reply('There is nothing to resume, please provide a valid YouTube URL to play something.');
+                Logger.verbose('Commands', 1, '[Play] No input provided and nothing to resume :(', 'yellow');
+                return message.reply('There is nothing to resume, please provide a valid input to play something.');
             }
         } else {
-
             /* Try to extract the videoID from the URL */
-            const videoId = YouTube.getIdFromURL(url);
+            const audioData = await this.getAudioData(input);
 
             /* Verify that we have the videoID and thereby a valid YouTube URL */
-            if (!videoId) {
-                Logger.verbose('Commands', 1, '[Play] Provided URL is invalid. URL: "' + url + '"', 'yellow');
-                return message.reply('That is not a valid YouTube URl!')
+            if (!audioData) {
+                Logger.verbose('Commands', 1, '[Play] No results found for: "' + input + '"', 'yellow');
+                return message.reply('No results found for: "' + input + '"');
             }
 
-            Logger.verbose('Commands', 1, '[Play] Provied URL with ID: "' + videoId + '"');
+            Logger.verbose('Commands', 1, '[Play] Trying to play "' + audioData.name + '" from path "' + audioData.path + '"');
+            AudioClient.getInstance().play(audioData.path);
 
-            /* Generate the target cache path */
-            const cachePath = path.resolve(process.cwd() + '/cache/youtube/' + md5(videoId) + '.mp3');
-            const video = await YouTube.download(url, cachePath);
-
-            Logger.verbose('Commands', 1, '[Play] Trying to play "' + videoId + '" from path "' + cachePath + '"');
-            AudioClient.getInstance().play(cachePath);
-
-            message.reply('Now playing "' + video.name + '".');
+            message.reply('Now playing "' + audioData.name + '".');
         }
     }
 }

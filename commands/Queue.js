@@ -1,10 +1,9 @@
-const AbstractCommand = require('../core/Commands/AbstractCommand.js');
 const CommandHelper = require('../core/CommandHelper.js');
 const AudioClient = require('../core/AudioClient/AudioClient.js');
-const YouTube = require('../core/YouTube.js');
 const Logger = require('../core/Logger.js');
+const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 
-class QueueCommand extends AbstractCommand {
+class QueueCommand extends PlayerCommand {
     constructor() {
         super('queue', {
            aliases: ['queue'] 
@@ -13,31 +12,28 @@ class QueueCommand extends AbstractCommand {
 
     async childExec(message) {
         /* Get YouTube URLfrom the message */
-        const url = CommandHelper.getCleared(this.id, message);
+        const input = CommandHelper.getCleared(this.id, message);
 
-        Logger.verbose('Commands', 1, '[Queue] Queue command received. Input: "' + url + '"');
+        Logger.verbose('Commands', 1, '[Queue] Queue command received. Input: "' + input + '"');
 
         /* If no URL has been supplied we have to check if the AudioClient is paused and can be resumed */
-        if (!url.length) {
-            Logger.verbose('Commands', 1, '[Play] No URL provided :(');
-            return message.reply('There is nothing queue.');
+        if (!input.length) {
+            Logger.verbose('Commands', 1, '[Play] No input provided :(');
+            return message.reply('Please provide a valid input to queue something.');
         } else {
             /* Try to extract the videoID from the URL */
-            const videoId = YouTube.getIdFromURL(url);
+            const audioData = await this.getAudioData(input);
 
             /* Verify that we have the videoID and thereby a valid YouTube URL */
-            if (!videoId) {
-                Logger.verbose('Commands', 1, '[Queue] Provided URL is invalid. URL: "' + url + '"', 'yellow');
-                return message.reply('That is not a valid YouTube URl!')
+            if (!audioData) {
+                Logger.verbose('Commands', 1, '[Queue] Provided input is invalid. No results for input: "' + input + '"', 'yellow');
+                return message.reply('Sorry, i could not find anything for "' + input + '"!');
             }
 
-            Logger.verbose('Commands', 1, '[Queue] Provied URL with ID: "' + videoId + '"');
-            const video = await YouTube.download(url);
+            Logger.verbose('Commands', 1, '[Queue] Trying to play "' + audioData.name + '" from path "' + audioData.path + '"');
+            await AudioClient.getInstance().queue(audioData.path, audioData.name);
 
-            Logger.verbose('Commands', 1, '[Queue] Trying to play "' + videoId + '" from path "' + YouTube.getCachePath(videoId) + '"');
-            await AudioClient.getInstance().queue(YouTube.getCachePath(videoId), video.name);
-
-            message.reply('Added "' + video.name + '" to the queue.');
+            message.reply('Added "' + audioData.name + '" to the queue.');
         }
     }  
 }

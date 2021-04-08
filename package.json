@@ -27,7 +27,8 @@
     "sqlite": "^4.0.19",
     "sqlite3": "^5.0.2",
     "wikipedia": "^1.0.5",
-    "ytdl-core": "^4.5.0"
+    "ytdl-core": "^4.5.0",
+    "ytsr": "^3.4.0"
   },
   "devDependencies": {
     "sequelize-cli": "^6.2.0"
