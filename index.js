@@ -6,7 +6,7 @@ const { exit } = require('process');
 const packageJSON = require('./package.json');
 const Logger = require('./core/Logger.js');
 const Bot = require('./Bot.js');
-const AudioClient = require('./core/AudioClient.js');
+const AudioClient = require('./core/AudioClient/AudioClient.js');
 const WikiPedia = require('./core/Wikipedia');
 
 /* Wrap in async self executing anonymous arrow function so we can await */

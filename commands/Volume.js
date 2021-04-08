@@ -1,5 +1,5 @@
-const AbstractCommand = require('../core/abstract/AbstractCommand.js');
-const AudioClient = require('../core/AudioClient.js'); 
+const AbstractCommand = require('../core/Commands/AbstractCommand.js');
+const AudioClient = require('../core/AudioClient/AudioClient.js'); 
 const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
 
@@ -17,7 +17,7 @@ class LeaveCommand extends AbstractCommand {
         Logger.verbose('Commands', 1, '[Volume] Volume command receive. Value: "' + input + '"');
 
         /* Multiply by one to parse to int/float or NaN */
-        const volume = input * 1
+        let volume = input * 1
 
         /* Check if the input could be parsed */
         if (isNaN(volume)) {

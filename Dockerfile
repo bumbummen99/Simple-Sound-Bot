@@ -2,7 +2,7 @@
 FROM node:lts-alpine
 
 # Install GIT so we can use git dependencies
-RUN apk update && apk upgrade && apk add --no-cache bash git openssh
+RUN apk update && apk upgrade && apk add --no-cache bash git openssh ffmpeg
 
 # Add the source
 ADD . /root/simple-sound-bot/

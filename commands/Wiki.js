@@ -1,10 +1,9 @@
-const AbstractCommand = require('../core/abstract/AbstractCommand.js');
+const WikipediaCommand = require('../core/Commands/WikipediaCommand.js');
 const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
-const String = require('../core/String.js');
 const WikiPedia = require('../core/Wikipedia.js');
 
-class WikiCommand extends AbstractCommand {
+class WikiCommand extends WikipediaCommand {
     constructor() {
         super('wiki', {
            aliases: ['wiki'] 
@@ -18,20 +17,21 @@ class WikiCommand extends AbstractCommand {
         Logger.verbose('Commands', 1, '[Wiki] Wiki command received. Input: "' + title + '"');
 
         /* Fetch the page */
-        const pageData = await WikiPedia.getPageData(title);
+        let pageData = null;
+        try {
+            pageData = await this.getPageData(title);
+        } catch (e) {
+            /* Check if there was an error getting the page */
+            if (e.name === 'pageError' && e.message.includes('No page with given title exists :')) {
+                return message.reply('Could not find any page for "' + title + '".');
+            }
+
+            /* Just re-throw unhandled errors */
+            throw e;
+        }
 
         /* Post an embed with the data */
-        message.reply({embed: {
-            color: 3447003,
-            url: pageData.url,
-            title: (pageData.title ? pageData.title : null) ?? text,
-            image: {
-                url: pageData.image,
-            },
-            description: String.excerpt(pageData.extract, 2048),
-            timestamp: new Date(),
-          }
-        });
+        return message.reply(this.generateEmbed(pageData));
     }
 }
 

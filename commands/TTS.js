@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const md5 = require('md5');
 
-const AbstractCommand = require('../core/abstract/AbstractCommand.js');
-const AudioClient = require('../core/AudioClient.js'); 
+const AbstractCommand = require('../core/Commands/AbstractCommand.js');
+const AudioClient = require('../core/AudioClient/AudioClient.js'); 
 const PollyTTS = require('../core/PollyTTS.js');
 const Downloader = require('../core/Downloader.js');
 const CommandHelper = require('../core/CommandHelper.js');

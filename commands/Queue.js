@@ -1,6 +1,6 @@
-const AbstractCommand = require('../core/abstract/AbstractCommand.js');
+const AbstractCommand = require('../core/Commands/AbstractCommand.js');
 const CommandHelper = require('../core/CommandHelper.js');
-const AudioClient = require('../core/AudioClient.js');
+const AudioClient = require('../core/AudioClient/AudioClient.js');
 const YouTube = require('../core/YouTube.js');
 const Logger = require('../core/Logger.js');
 

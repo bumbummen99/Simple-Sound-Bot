@@ -1,8 +1,8 @@
 const path = require('path');
 const md5 = require('md5');
 
-const AbstractCommand = require('../core/abstract/AbstractCommand.js');
-const AudioClient = require('../core/AudioClient.js');
+const AbstractCommand = require('../core/Commands/AbstractCommand.js');
+const AudioClient = require('../core/AudioClient/AudioClient.js');
 const YouTube = require('../core/YouTube.js');
 const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');

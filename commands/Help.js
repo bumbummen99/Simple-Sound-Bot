@@ -1,4 +1,4 @@
-const AbstractCommand = require('../core/abstract/AbstractCommand.js');
+const AbstractCommand = require('../core/Commands/AbstractCommand.js');
 const Logger = require('../core/Logger.js');
 
 class HelpCommand extends AbstractCommand {

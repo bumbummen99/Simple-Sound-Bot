@@ -1,7 +1,8 @@
 const { Op } = require('sequelize');
 
-const Logger = require('./Logger.js');
-const db = require('../models/index.js');
+const Logger = require('../Logger.js');
+const db = require('../../models/index.js');
+const ExtendedStreamDispatcher = require('./ExtendedStreamDispatcher.js');
 
 let instance = null;
 
@@ -94,9 +95,12 @@ class AudioClient {
 
     async skip() {
         Logger.verbose('Commands', 1, '[AudioClient] Skipping current track.');
-        this.pause();
-
-        await this.next();
+        if (this.dispatcher) {
+            Logger.verbose('AudioClient', 1, 'Stopping current dispatcher...');
+            this.dispatcher.stop();
+        } else {
+            Logger.verbose('AudioClient', 1, 'There is no dispatcher to stop/finish.');
+        }
     }
 
     async next() {
@@ -105,31 +109,17 @@ class AudioClient {
             return this.play(this.uri);
         }
 
-        let entry = null;
+        /* Remove finished queue item */
         if (this.queueID !== null) {
-            /* Remove finished queue item */
             await db.Queue.destroy({
                 where: {
                     id: this.queueID,
                 }
-            });
-
-            /* Try to get next queue item */
-            const entries = await db.Queue.findAll({
-                limit: 1,
-                where: {
-                    id: {
-                        [Op.gt]: this.queueID
-                    }
-                }
-            });
-            if (entries.length) {
-                entry = entries[0];
-            }         
-        } else {
-            /* Get first queue item */
-            entry = await db.Queue.findOne();
+            });      
         }
+
+        /* Get first queue item */
+        const entry = await db.Queue.findOne();
         
         /* Set and play the item if there is any */
         if (entry) {
@@ -151,7 +141,12 @@ class AudioClient {
     play(uri, tts = false, time = null) {
         if (this.connection) {
             /* Try to play the privded URI and get the dispatcher */
-            this.dispatcher = this.connection.play(uri, {...this.streamOptions, ...{seek: time ? time / 1000 : 0}});
+            this.dispatcher = new ExtendedStreamDispatcher(this.connection.play(uri, {
+                ...this.streamOptions,
+                ...{
+                    seek: time ? time / 1000 : 0
+                }
+            }));
             this.finished = false;
 
             /* Set the uri */
@@ -178,7 +173,7 @@ class AudioClient {
         if (this.dispatcher) {
             Logger.verbose('AudioClient', 1, 'Pausing current dispatcher...');
             this.dispatcher.pause();
-            this.times.push(this.dispatcher.totalStreamTime);
+            this.times.push(this.dispatcher.getTotalStreamTime());
         } else {
             Logger.verbose('AudioClient', 1, 'There is no dispatcher to pause.');
         }
@@ -207,7 +202,7 @@ class AudioClient {
     }
 
     isPaused() {
-        return this.dispatcher && this.dispatcher.paused;
+        return this.dispatcher && this.dispatcher.isPaused();
     }
 
     sumTime() {

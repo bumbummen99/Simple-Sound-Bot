@@ -1,5 +1,5 @@
 const { AkairoClient, CommandHandler } = require('discord-akairo');
-const AudioClient = require('./core/AudioClient');
+const AudioClient = require('./core/AudioClient/AudioClient.js');
 const Logger = require('./core/Logger.js');
 
 class Bot extends AkairoClient {

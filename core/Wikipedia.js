@@ -20,10 +20,6 @@ class WikiPedia {
         }
     }
 
-    static async getPageIntro(title) {
-        return (await WikiPedia._loadPageData(title)).intro;
-    }
-
     static async getPageData(title) {
         return await WikiPedia._loadPageData(title);
     }

@@ -1,5 +1,5 @@
-const AbstractCommand = require('../core/abstract/AbstractCommand.js');
-const AudioClient = require('../core/AudioClient.js');
+const AbstractCommand = require('../core/Commands/AbstractCommand.js');
+const AudioClient = require('../core/AudioClient/AudioClient.js');
 
 class RepeatCommand extends AbstractCommand {
     constructor() {
