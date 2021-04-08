@@ -72,7 +72,7 @@ npm run start -- --help
 # Verbosity
 The software will by default hide unecessary log outputs. To control the verbosity of the software, simply append the ´v´ argument. The amount of `v`'s controls the verbosity. For example, in order to set the verbosity to 4 the following command would have to be used:
 ```
-npm run start -- --vvvv
+npm run start -- -vvvv
 ```
 
 # Thanks
