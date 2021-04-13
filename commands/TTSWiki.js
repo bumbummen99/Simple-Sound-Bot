@@ -23,7 +23,7 @@ class TTSWikiCommand extends WikipediaCommand {
         } catch (e) {
             /* Check if there was an error getting the page */
             if (e.name === 'pageError' && e.message.includes('No page with given title exists :')) {
-                return message.reply('Could not find any page for "' + title + '".');
+                return message.util.reply('Could not find any page for "' + title + '".');
             }
 
             /* Just re-throw unhandled errors */
@@ -38,7 +38,7 @@ class TTSWikiCommand extends WikipediaCommand {
         AudioClient.playBetween(audioFile);
 
         /* Post an embed with the data */
-        message.reply(this.generateEmbed(pageData));
+        message.util.reply(this.generateEmbed(pageData));
     }
 }
 

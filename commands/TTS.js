@@ -24,7 +24,7 @@ class TTSCommand extends AbstractCommand {
         Logger.verbose('Commands', 1, '[TTS] Playing input from: "' + audioFile + '"');
         AudioClient.playBetween(audioFile);
 
-        message.reply('Doing as you demand...');
+        message.util.reply('Doing as you demand...');
     }
 }
 

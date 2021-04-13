@@ -14,7 +14,7 @@ class SkipCommand extends AbstractCommand {
 
         await AudioClient.skip();
 
-        message.reply('Doing as you demand...');
+        message.util.reply('Doing as you demand...');
     }
 }
 

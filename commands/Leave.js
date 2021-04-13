@@ -16,6 +16,8 @@ class LeaveCommand extends AbstractCommand {
         await AudioClient.leave();
 
         Logger.verbose('Commands', 1, '[Leave] Bot left the current channel.');
+
+        message.util.reply('Screw you guys i\'m going home!');
     }
 }
 

@@ -20,9 +20,14 @@ class PlayCommand extends PlayerCommand {
         if (!input.length) {
             Logger.verbose('Commands', 1, '[Play] No input provided, trying to resume playback or play next in queue.');
             if (AudioClient.isPaused()) {
-                await AudioClient.resume();
+                AudioClient.resume();
+
+                return message.reply('Trying to resume current playback...');
             } else {
-                await AudioClient.next();
+                return Promise.all([
+                    message.reply('Trying to play next in queue...'),
+                    await AudioClient.next(),
+                ]);
             }
         } else {
             /* Try to extract the videoID from the URL */

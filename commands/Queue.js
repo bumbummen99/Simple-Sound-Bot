@@ -19,7 +19,7 @@ class QueueCommand extends PlayerCommand {
         /* If no URL has been supplied we have to check if the AudioClient is paused and can be resumed */
         if (!input.length) {
             Logger.verbose('Commands', 1, '[Play] No input provided :(');
-            return message.reply('Please provide a valid input to queue something.');
+            return message.util.reply('Please provide a valid input to queue something.');
         } else {
             /* Try to extract the videoID from the URL */
             const audioData = await this.getAudioData(input);
@@ -27,13 +27,13 @@ class QueueCommand extends PlayerCommand {
             /* Verify that we have the videoID and thereby a valid YouTube URL */
             if (!audioData) {
                 Logger.verbose('Commands', 1, '[Queue] Provided input is invalid. No results for input: "' + input + '"', 'yellow');
-                return message.reply('Sorry, i could not find anything for "' + input + '"!');
+                return message.util.reply('Sorry, i could not find anything for "' + input + '"!');
             }
 
             Logger.verbose('Commands', 1, '[Queue] Trying to play "' + audioData.name + '" from path "' + audioData.path + '"');
             await AudioClient.queue(audioData.path, audioData.name);
 
-            message.reply('Added "' + audioData.name + '" to the queue.');
+            message.util.reply('Added "' + audioData.name + '" to the queue.');
         }
     }  
 }

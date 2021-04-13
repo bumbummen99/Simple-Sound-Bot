@@ -80,8 +80,10 @@ const WikiPedia = require('./core/Wikipedia');
     process.on('SIGTERM', shutdown);
     process.on('SIGINT', shutdown);
 
+    Logger.verbose('Bootstrap', 1, 'Starting the Bot...');
+
     /* Login with the provided DISCORD_BOT_TOKEN */
     client.login(process.env.DISCORD_BOT_TOKEN);
 
-    Logger.verbose('Bootstrap', 1, 'Bot successfully started!');
+    
 })();

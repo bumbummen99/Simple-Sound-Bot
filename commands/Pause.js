@@ -14,7 +14,7 @@ class PauseCommand extends AbstractCommand {
 
         AudioClient.pause();
 
-        message.reply('Doing as you demand...');
+        message.util.reply('Doing as you demand...');
     }
 }
 

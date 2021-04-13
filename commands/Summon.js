@@ -15,6 +15,11 @@ class SummonCommand extends AbstractCommand {
         /* Join the message authors channel */
         await AudioClient.join(message.member.voice.channel);
 
+        setTimeout(async () => {
+            AudioClient.playBetween(await PollyTTS.generate(process.env.GREET_TEMPLATE));
+        }, 500);
+        
+
         Logger.verbose('Commands', 1, '[Summon] Summoned the bot.');
     }
 }

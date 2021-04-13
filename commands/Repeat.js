@@ -11,7 +11,7 @@ class RepeatCommand extends AbstractCommand {
     async childExec(message) {
         const state = AudioClient.toggleRepeat();
 
-        message.reply((state ? 'Enabled' : 'Disabled') + ' track repeat.');
+        message.util.reply((state ? 'Enabled' : 'Disabled') + ' track repeat.');
     }
 }
 

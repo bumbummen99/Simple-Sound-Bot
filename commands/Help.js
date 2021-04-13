@@ -13,7 +13,7 @@ class HelpCommand extends AbstractCommand {
 
         const prefix = process.env.DISCORD_BOT_COMMAND_PREFIX;
 
-        return message.reply({
+        return message.util.reply({
             embed: {
                 color: 3447003,
                 url: 'https://github.com/bumbummen99/Simple-Sound-Bot',
