@@ -276,6 +276,7 @@ class AudioClient {
 
     toggleRepeat() {
         this._repeat = !this._repeat;
+        return this._repeat;
     }
 
     _sumTime() {
