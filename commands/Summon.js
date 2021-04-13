@@ -1,5 +1,6 @@
 const AbstractCommand = require('../core/Commands/AbstractCommand.js');
 const AudioClient = require('../core/AudioClient/AudioClient.js'); 
+const PollyTTS = require('../core/PollyTTS.js');
 const Logger = require('../core/Logger.js');
 
 class SummonCommand extends AbstractCommand {
@@ -17,7 +18,7 @@ class SummonCommand extends AbstractCommand {
 
         setTimeout(async () => {
             AudioClient.playBetween(await PollyTTS.generate(process.env.GREET_TEMPLATE));
-        }, 500);
+        }, 333);
         
 
         Logger.verbose('Commands', 1, '[Summon] Summoned the bot.');
