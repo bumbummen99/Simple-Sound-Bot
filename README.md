@@ -5,6 +5,7 @@ Yes, another Discord music bot! But this one is supposed to be simple and to all
 - [x] Simple YouTube-Audio player with queue and repeat
 - [x] Text To Speech functionality using AWS Polly
 - [x] Wikipedia integration, responds in text and using TTS.
+- [x] Greet people when they join the bots channel.
 - [ ] More to come!
 
 # Commands
