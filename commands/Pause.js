@@ -12,7 +12,7 @@ class PauseCommand extends AbstractCommand {
     async childExec(message) {
         Logger.verbose('Commands', 1, '[Pause] Pause command received, pausing playback...');
 
-        AudioClient.getInstance().pause();
+        AudioClient.pause();
 
         message.reply('Doing as you demand...');
     }

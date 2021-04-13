@@ -1,10 +1,11 @@
 const EventEmitter = require("events");
 
-class ExtendedStreamDispatcher extends EventEmitter {
+class StreamDispatcherWrapper extends EventEmitter {
     constructor(dispatcher) {
         super();
 
         this.dispatcher = dispatcher;
+        this.finished = false;
 
         this.attachListeners();
     }
@@ -13,12 +14,14 @@ class ExtendedStreamDispatcher extends EventEmitter {
      * Attach to dispatcher event listeners to foreward
      * basic events.
      */
-      attachListeners() {
+    attachListeners() {
         this.dispatcher.on('start', () => {
             this.emit('start');
         });
 
         this.dispatcher.on('finish', () => {
+            this.finished = true;
+
             this.emit('finish');
         });
 
@@ -40,38 +43,62 @@ class ExtendedStreamDispatcher extends EventEmitter {
     }
 
     pause() {
-        this.dispatcher.pause();
+        if (!this.finished) {
+            this.dispatcher.pause();
 
-        this.emit('paused');
+            this.emit('paused');
+
+            return true;
+        } else {
+            return false;
+        }
     }
 
     resume() {
-        this.dispatcher.resume();
+        if (!this.finished) {
+            this.dispatcher.resume();
 
-        this.emit('resumed');
-    }
+            this.emit('resumed');
 
-    setVolume(volume) {
-        this.dispatcher.setVolume(volume);
-    }
-
-    isPaused() {
-        return this.dispatcher.paused;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
      * Pauses the current playback and
      * emits the finished event.
      */
-    stop() {
-        this.dispatcher.pause();
+    skip() {
+        if (!this.finished) {
+            this.dispatcher.pause();
 
-        this.emit('finish');
+            this.finished = true;
+    
+            this.emit('finish');
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    setVolume(volume) {
+        this.dispatcher.setVolume(volume);
     }
 
     getTotalStreamTime() {
         return this.dispatcher.totalStreamTime;
     }
+
+    isFinished() {
+        return this.finished;
+    }
+
+    isPaused() {
+        return this.dispatcher.paused;
+    }
 }
 
-module.exports = ExtendedStreamDispatcher;
+module.exports = StreamDispatcherWrapper;

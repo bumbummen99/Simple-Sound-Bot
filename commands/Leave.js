@@ -12,11 +12,8 @@ class LeaveCommand extends AbstractCommand {
     async childExec(message) {
         Logger.verbose('Commands', 1, '[Leave] Leave command received, leaving...');
 
-        /* Get the AudioClient singleton */
-        const voice = AudioClient.getInstance();
-
-        /* Join the message authors channel */
-        await voice.disconnect();
+        /* Disconnect the AudioClient */
+        await AudioClient.leave();
 
         Logger.verbose('Commands', 1, '[Leave] Bot left the current channel.');
     }

@@ -33,12 +33,9 @@ class TTSWikiCommand extends WikipediaCommand {
         /* Generate or load the audio file */
         const audioFile = await PollyTTS.generate(pageData.intro);
 
-        /* Get the AudioClient singleton */
-        const voice = AudioClient.getInstance();
-
         /* Play the generated audio file */
         Logger.verbose('Commands', 1, '[TTSWiki] Playing input from: "' + audioFile + '"');
-        voice.tts(audioFile);
+        AudioClient.playBetween(audioFile);
 
         /* Post an embed with the data */
         message.reply(this.generateEmbed(pageData));

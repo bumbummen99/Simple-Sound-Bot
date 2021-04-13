@@ -54,6 +54,7 @@ const WikiPedia = require('./core/Wikipedia');
     Logger.setVerboseness('Bootstrap', verbosity).setModuleColor('Bootstrap', 'greenBright');
     Logger.setVerboseness('Bot', verbosity).setModuleColor('Bot', 'grey');
     Logger.setVerboseness('Commands', verbosity).setModuleColor('Commands', 'green');
+    Logger.setVerboseness('Player', verbosity).setModuleColor('Player', 'blue');
     Logger.setVerboseness('AudioClient', verbosity).setModuleColor('AudioClient', 'blue');
     Logger.setVerboseness('CommandHelper', verbosity).setModuleColor('CommandHelper', 'grey');
     Logger.setVerboseness('YouTube', verbosity).setModuleColor('YouTube', 'blue');
@@ -70,7 +71,7 @@ const WikiPedia = require('./core/Wikipedia');
     const shutdown = () => {
         Logger.verbose('Bootstrap', 1, 'Received termination signal, shutting down gracefully...');
 
-        AudioClient.getInstance().disconnect();
+        AudioClient.leave();
         client.destroy();
 
         Logger.verbose('Bootstrap', 1, 'Shutdown complete! Bye :)');

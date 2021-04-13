@@ -1,7 +1,6 @@
 const WikipediaCommand = require('../core/Commands/WikipediaCommand.js');
 const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
-const WikiPedia = require('../core/Wikipedia.js');
 
 class WikiCommand extends WikipediaCommand {
     constructor() {

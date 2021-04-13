@@ -12,7 +12,7 @@ class SkipCommand extends AbstractCommand {
     async childExec(message) {
         Logger.verbose('Commands', 1, '[Skip] Skip command received, Skip playback...');
 
-        await AudioClient.getInstance().skip();
+        await AudioClient.skip();
 
         message.reply('Doing as you demand...');
     }

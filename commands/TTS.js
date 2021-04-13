@@ -1,11 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const md5 = require('md5');
-
 const AbstractCommand = require('../core/Commands/AbstractCommand.js');
 const AudioClient = require('../core/AudioClient/AudioClient.js'); 
 const PollyTTS = require('../core/PollyTTS.js');
-const Downloader = require('../core/Downloader.js');
 const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
 
@@ -25,12 +20,9 @@ class TTSCommand extends AbstractCommand {
         /* Generate or load the cached audio */
         const audioFile = await PollyTTS.generate(text);
 
-        /* Get the AudioClient singleton */
-        const voice = AudioClient.getInstance();
-
         /* Play the generated audio file */
         Logger.verbose('Commands', 1, '[TTS] Playing input from: "' + audioFile + '"');
-        voice.tts(audioFile);
+        AudioClient.playBetween(audioFile);
 
         message.reply('Doing as you demand...');
     }

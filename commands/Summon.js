@@ -12,11 +12,8 @@ class SummonCommand extends AbstractCommand {
     async childExec(message) {
         Logger.verbose('Commands', 1, '[Summon] Summon command received.');
 
-        /* Get the AudioClient singleton */
-        const voice = AudioClient.getInstance();
-
         /* Join the message authors channel */
-        await voice.join(message.member.voice.channel);
+        await AudioClient.join(message.member.voice.channel);
 
         Logger.verbose('Commands', 1, '[Summon] Summoned the bot.');
     }

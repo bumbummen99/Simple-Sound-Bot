@@ -5,7 +5,7 @@ class AbstractCommand extends Command {
     async exec(message) {
         let allow = true;
         if (process.env.DISCORD_BOT_COMMAND_Channel.length) {
-            Logger.verbose('Commands', 1, '[AbstractCommand] Command channels resteicted, testing for "' + process.env.DISCORD_BOT_COMMAND_Channel.split(',').join(', ') + '".');
+            Logger.verbose('Commands', 1, '[AbstractCommand] Command channels restricted, testing for "' + process.env.DISCORD_BOT_COMMAND_Channel.split(',').join(', ') + '".');
             allow = false;
             for (let cid of process.env.DISCORD_BOT_COMMAND_Channel.split(',')) {
                 if (message.channel.id === cid) {

@@ -18,12 +18,11 @@ class PlayCommand extends PlayerCommand {
 
         /* If no URL has been supplied we have to check if the AudioClient is paused and can be resumed */
         if (!input.length) {
-            if (AudioClient.getInstance().isPaused()) {
-                Logger.verbose('Commands', 1, '[Play] No input provided, trying to resume playback.');
-                await AudioClient.getInstance().resume();
+            Logger.verbose('Commands', 1, '[Play] No input provided, trying to resume playback or play next in queue.');
+            if (AudioClient.isPaused()) {
+                await AudioClient.resume();
             } else {
-                Logger.verbose('Commands', 1, '[Play] No input provided and nothing to resume :(', 'yellow');
-                return message.reply('There is nothing to resume, please provide a valid input to play something.');
+                await AudioClient.next();
             }
         } else {
             /* Try to extract the videoID from the URL */
@@ -36,7 +35,7 @@ class PlayCommand extends PlayerCommand {
             }
 
             Logger.verbose('Commands', 1, '[Play] Trying to play "' + audioData.name + '" from path "' + audioData.path + '"');
-            AudioClient.getInstance().play(audioData.path);
+            AudioClient.play(audioData.path);
 
             message.reply('Now playing "' + audioData.name + '".');
         }

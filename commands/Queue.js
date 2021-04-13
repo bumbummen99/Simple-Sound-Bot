@@ -31,11 +31,11 @@ class QueueCommand extends PlayerCommand {
             }
 
             Logger.verbose('Commands', 1, '[Queue] Trying to play "' + audioData.name + '" from path "' + audioData.path + '"');
-            await AudioClient.getInstance().queue(audioData.path, audioData.name);
+            await AudioClient.queue(audioData.path, audioData.name);
 
             message.reply('Added "' + audioData.name + '" to the queue.');
         }
     }  
 }
 
-module.exports =QueueCommand;
+module.exports = QueueCommand;

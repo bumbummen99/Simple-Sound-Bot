@@ -34,11 +34,8 @@ class LeaveCommand extends AbstractCommand {
 
         Logger.verbose('Commands', 1, '[Volume] Input normalized to: "' + volume + '"');
 
-        /* Get the AudioClient singleton */
-        const voice = AudioClient.getInstance();
-
-        /* Join the message authors channel */
-        await voice.volume(volume);
+        /* Set the volume on the AudioClient */
+        await AudioClient.volume(volume);
 
         Logger.verbose('Commands', 1, '[Volume] Set volume to "' + volume + '".');
         return message.reply('Set bot volume to "' + volume + '"');
