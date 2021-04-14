@@ -1,11 +1,18 @@
+const { StreamDispatcher } = require("discord.js");
 const EventEmitter = require("events");
 
 class StreamDispatcherWrapper extends EventEmitter {
     constructor(dispatcher) {
         super();
 
-        this.dispatcher = dispatcher;
-        this.finished = false;
+        this._finished = false;
+
+        this.setDispatcher(dispatcher);
+    }
+
+
+    setDispatcher(dispatcher) {
+        this._dispatcher = dispatcher;
 
         this.attachListeners();
     }
@@ -15,36 +22,36 @@ class StreamDispatcherWrapper extends EventEmitter {
      * basic events.
      */
     attachListeners() {
-        this.dispatcher.on('start', () => {
+        this._dispatcher.on('start', () => {
             this.emit('start');
         });
 
-        this.dispatcher.on('finish', () => {
-            this.finished = true;
+        this._dispatcher.on('finish', () => {
+            this._finished = true;
 
             this.emit('finish');
         });
 
-        this.dispatcher.on('speaking', state => {
+        this._dispatcher.on('speaking', state => {
             this.emit('speaking', state)
         });
 
-        this.dispatcher.on('volumeChange', (oldVolume, newVolume) => {
+        this._dispatcher.on('volumeChange', (oldVolume, newVolume) => {
             this.emit('volumeChange', oldVolume, newVolume)
         });
 
-        this.dispatcher.on('error', () => {
+        this._dispatcher.on('error', () => {
             this.emit('error');
         });
 
-        this.dispatcher.on('debug', info => {
+        this._dispatcher.on('debug', info => {
             this.emit('debug', info);
         });
     }
 
     pause() {
-        if (!this.finished) {
-            this.dispatcher.pause();
+        if (!this._finished) {
+            this._dispatcher.pause();
 
             this.emit('paused');
 
@@ -55,8 +62,8 @@ class StreamDispatcherWrapper extends EventEmitter {
     }
 
     resume() {
-        if (!this.finished) {
-            this.dispatcher.resume();
+        if (!this._finished) {
+            this._dispatcher.resume();
 
             this.emit('resumed');
 
@@ -71,10 +78,10 @@ class StreamDispatcherWrapper extends EventEmitter {
      * emits the finished event.
      */
     skip() {
-        if (!this.finished) {
-            this.dispatcher.pause();
+        if (!this._finished) {
+            this._dispatcher.pause();
 
-            this.finished = true;
+            this._finished = true;
     
             this.emit('finish');
 
@@ -85,19 +92,19 @@ class StreamDispatcherWrapper extends EventEmitter {
     }
 
     setVolume(volume) {
-        this.dispatcher.setVolume(volume);
+        this._dispatcher.setVolume(volume);
     }
 
     getTotalStreamTime() {
-        return this.dispatcher.totalStreamTime;
+        return this._dispatcher.totalStreamTime;
     }
 
     isFinished() {
-        return this.finished;
+        return this._finished;
     }
 
     isPaused() {
-        return this.dispatcher.paused;
+        return this._dispatcher.paused;
     }
 }
 

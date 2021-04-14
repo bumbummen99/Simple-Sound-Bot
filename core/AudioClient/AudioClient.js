@@ -1,6 +1,8 @@
 const Logger = require('../Logger.js');
 const StreamDispatcherWrapper = require('./StreamDispatcherWrapper.js');
 const db = require('../../models/index.js');
+const StreamDispatcherManager = require('./StreamDispatcherManager.js');
+const { get } = require('../Downloader.js');
 
 class AudioClient {
     constructor() {
@@ -14,7 +16,8 @@ class AudioClient {
         this.connection = null;
 
         /* The wrapper for the current connections dispatcher */
-        this.dispatcher = null;
+        this._currentDispatcherIdentifier = null;
+        this._dispatcherManager = new StreamDispatcherManager();
 
         /* The stream options cache to keep options consitent between dispatchers */
         this.streamOptions = {
@@ -27,14 +30,11 @@ class AudioClient {
     async join(channel) {
         let resume = null;
         if (this.hasDispatcher() && !this.getDispatcher().isFinished() && !this.getDispatcher().isPaused()) {
-            Logger.verbose('AudioClient', 1, '[AudioClient] Join detected previous dispatcher, pausing...');
+            Logger.verbose('AudioClient', 1, 'Join detected previous dispatcher, pausing...');
 
             this.pause();
 
-            resume = {
-                resumeURI: this._uri,
-                resumeTime: this._sumTime(),
-            };
+            resume = this.getDispatcherData();
         }
 
         /* Join the voice channel and wait for the connection */
@@ -46,8 +46,10 @@ class AudioClient {
         Logger.verbose('AudioClient', 1, 'Successfully connected to channel "' + channel.name + '"');
 
         if (resume) {
-            Logger.verbose('AudioClient', 1, '[AudioClient] Resuming previous playback at time "' + resume.resumeTime + '"...');
-            this.play(resume.resumeURI, true, resume.resumeTime);
+            Logger.verbose('AudioClient', 1, 'Resuming previous playback at time "' + resume.time + '"...');
+            this.play(resume.uri, resume.playBetween, resume.time, resume.dispatcher, resume.id);
+
+            this.getDispatcher().setDispatcher();
         }
     }
 
@@ -58,16 +60,15 @@ class AudioClient {
             const name = this.connection.channel.name;
 
             /* Also clear the dispatcher */
-            if (this.dispatcher) {
-                this.dispatcher.pause();
-                this.dispatcher = null;
+            if (this.getDispatcher()) {
+                this.getDispatcher().pause();
             }
 
             /* Disconnect from the channel */
             this.connection.disconnect();
             this.connection = null;            
 
-            Logger.verbose('AudioClient', 1, 'Diconnected the AudioClient from channel "' + name + '".');
+            Logger.verbose('AudioClient', 1, `Diconnected the AudioClient from channel "${name}".`);
         } else {
             Logger.verbose('AudioClient', 1, 'No need to disconnect, we are not connected :)');
         }
@@ -80,7 +81,7 @@ class AudioClient {
             name: name,
         });
 
-        Logger.verbose('Player', 1, '[Player] Added URI "' + path + '" with name "' + name + '" to the Queue.');
+        Logger.verbose('AudioClient', 1, `Added URI "${path}" with name "${name}" to the Queue.`);
     }
 
     clearQueue() {
@@ -90,13 +91,14 @@ class AudioClient {
             truncate: true
         });
 
-        Logger.verbose('Player', 1, '[Player] Cleared the whole Queue.');
+        Logger.verbose('AudioClient', 1, 'Cleared the whole Queue.');
     }
 
-    async next() {
+    async next(uri) {
         if (this._repeat) {
-            Logger.verbose('Player', 1, '[Player] Repeating current track.');
-            return this.play(this._uri);
+            Logger.verbose('AudioClient', 1, 'Repeating current track.');
+
+            return this.play(uri);
         }
 
         /* Remove finished queue item */
@@ -113,7 +115,7 @@ class AudioClient {
         
         /* Set and play the item if there is any */
         if (entry) {
-            Logger.verbose('CommPlayerands', 1, '[Player] Trying to play queued entry ' + entry.id + ' with path ' + entry.path);
+            Logger.verbose('AudioClient', 1, `Trying to play queued entry ${entry.id} with path ${entry.path}`);
             this._queueID = entry.id;
             this.play(entry.path);
         }
@@ -123,57 +125,62 @@ class AudioClient {
         if (this.isConnected()) {
             let resume = null;
             if (this.hasDispatcher() && !this.getDispatcher().isFinished() && !this.getDispatcher().isPaused()) {
-                Logger.verbose('AudioClient', 1, '[Player] PlayBetween detected previous dispatcher, pausing...');
+                Logger.verbose('AudioClient', 1, 'PlayBetween detected previous dispatcher, pausing...');
 
                 this.pause();
 
-                resume = {
-                    resumeURI: this._uri,
-                    resumeTime: this._sumTime(),
-                };
+                resume = this.getDispatcherData();
             }
 
-            Logger.verbose('Player', 1, '[Player] Playing between...');
+            Logger.verbose('AudioClient', 1, 'Playing between...');
             this.play(uri, false);
 
             this.getDispatcher().on('finish', () => {
-                Logger.verbose('Player', 1, '[Player] PlayBetween finished!');
+                Logger.verbose('AudioClient', 1, 'PlayBetween finished!');
+
                 if (resume) {
-                    Logger.verbose('Player', 1, '[Player] Resuming previous dispatcher at time "' + resume.resumeTime + '"...');
-                    this.play(resume.resumeURI, true, resume.resumeTime);
+                    Logger.verbose('AudioClient', 1, `Resuming previous dispatcher at time "${resume.time}"...`);
+                    this.play(resume.uri, resume.playBetween, resume.time, resume.dispatcher, resume.id);
                 }
             }); 
         }
     }
 
-    play(uri, next = true, time = 0) {
+    play(uri, next = true, time = 0, wrapper = null, identifier = null) {
         if (this.isConnected()) {
-            Logger.verbose('Player', 1, '[Player] Trying to play "' + uri + '"...');
+            Logger.verbose('AudioClient', 1, `Trying to play "${uri}"...`);
 
             /* Try to play the privded URI and get the dispatcher */
-            this.dispatcher = new StreamDispatcherWrapper(this.connection.play(uri, {
+            const dispatcher = this.connection.play(uri, {
                 ...this.streamOptions,
                 ...{
                     seek: time / 1000
                 }
-            }));
-
-            this._uri = uri;
-
-            this._times = [
-                time
-            ];
+            });
 
             /* Also update the speaking state */
             this.connection.setSpeaking(1);
 
-            if (next) {
-                this.dispatcher.on('finish', () => {
-                    this.next();
-                }); 
-            }
+            if (wrapper) {
+                wrapper.setDispatcher(dispatcher);
+            } else {
+                wrapper = new StreamDispatcherWrapper(dispatcher);
+                
+                wrapper.on('finish', () => {
+                    this._dispatcherManager.remove(identifier);
 
-            return this.dispatcher;
+                    if (next) {
+                        this.next(uri);
+                    }
+                });
+
+                /* Add the new wrapper to the manager */
+                identifier = this._dispatcherManager.add(wrapper, uri, time)
+            }
+ 
+            this._currentDispatcherIdentifier = identifier;
+
+            return identifier;
         }
 
         return null;
@@ -182,14 +189,14 @@ class AudioClient {
     pause() {
         if (this.hasDispatcher()) {
             /* Pause the dispatcher playback */
-            this.dispatcher.pause();
+            this.getDispatcher().pause();
 
             /* Set speaking state */
             this.connection.setSpeaking(0);
 
             Logger.verbose('AudioClient', 1, 'Paused the current dispatcher.');
 
-            this._times.push(this.dispatcher.getTotalStreamTime());
+            this.getDispatcherData().time += this.getDispatcher().getTotalStreamTime();
         } else {
             Logger.verbose('AudioClient', 1, 'There is no dispatcher to pause.');
 
@@ -201,7 +208,7 @@ class AudioClient {
         /* Check if the dispatcher is paused first */
         if (this.hasDispatcher()) {
             /* Try to resume the current dispatcher */
-            this.dispatcher.resume();
+            this.getDispatcher().resume();
 
             /* Set speaking state */
             this.connection.setSpeaking(1);
@@ -216,7 +223,7 @@ class AudioClient {
         Logger.verbose('Commands', 1, '[AudioClient] Skipping current track.');
         if (this.hasDispatcher()) {
             Logger.verbose('AudioClient', 1, 'Stopping current dispatcher...');
-            this.dispatcher.skip();
+            this.getDispatcher().skip();
         } else {
             Logger.verbose('AudioClient', 1, 'There is no dispatcher to stop/finish.');
         }
@@ -226,7 +233,7 @@ class AudioClient {
         /* Check for an dispatcher first */
         if (this.hasDispatcher()) {
             /* Stop the current playback */
-            this.dispatcher.stop();
+            this.getDispatcher().stop();
 
             /* Set speaking state */
             this.connection.setSpeaking(0);
@@ -243,8 +250,8 @@ class AudioClient {
 
         /* Apply the setting if there is a dispatcher */
         if (this.hasDispatcher()) {
-            this.dispatcher.setVolume(volume);
-            Logger.verbose('AudioClient', 1, 'Successfully set the volume to: ' + volume + '.');
+            this.getDispatcher().setVolume(volume);
+            Logger.verbose('AudioClient', 1, `Successfully set the volume to: '${volume}'.`);
         } else {
             Logger.verbose('AudioClient', 1, 'There is no dispatcher to set the volume on.');
         }
@@ -255,11 +262,26 @@ class AudioClient {
     }
 
     hasDispatcher() {
-        return this.isConnected() && this.dispatcher;
+        return this.isConnected() && this.getDispatcher();
+    }
+
+    getDispatcherData() {
+        if (this._currentDispatcherIdentifier) {
+            return this._dispatcherManager.get(this._currentDispatcherIdentifier) ?? null;
+        }
+        
+        return null;
     }
 
     getDispatcher() {
-        return this.dispatcher;
+        if (this._currentDispatcherIdentifier) {
+            const data = this._dispatcherManager.get(this._currentDispatcherIdentifier);
+            if (data) {
+                return data.dispatcher
+            }
+        }
+        
+        return null;
     }
 
     getVoiceChannel() {
@@ -271,7 +293,7 @@ class AudioClient {
     }
 
     isPaused() {
-        return this.hasDispatcher() && this.dispatcher.isPaused();
+        return this.hasDispatcher() && this.getDispatcher().isPaused();
     }
 
     toggleRepeat() {

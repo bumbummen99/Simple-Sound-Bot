@@ -13,14 +13,6 @@ class VoiceStateUpdateListener extends Listener {
     }
 
     exec(oldState, newState) {
-        /* Ignore Bots and self */
-        if (this._detectBotOrSelf([oldState, newState])) {
-            Logger.verbose('Bot', 2, 'Detected Bot/self voiceStateUpdate event, ignoring.');
-            return;
-        } else {
-            Logger.verbose('Bot', 2, 'Detected client voiceStateUpdate event.');
-        }
-
         /* Check if the audio client channel(s) are populated */
         const botVoiceChannel = AudioClient.getVoiceChannel();
         if (botVoiceChannel) {
@@ -34,29 +26,32 @@ class VoiceStateUpdateListener extends Listener {
             }
         }
 
-        /* Detec it user connected to channel */
-        if (oldState.channel === null) {
-            Logger.verbose('Bot', 2, 'User "' + newState.member.displayName + '" connected to channel ' + newState.channel.id + '.');
+        /* Handle other clients events */
+        if (!this._detectSelf([oldState, newState])) {
+            /* Detec it user connected to channel */
+            if (oldState.channel === null) {
+                Logger.verbose('Bot', 2, 'User "' + newState.member.displayName + '" connected to channel ' + newState.channel.id + '.');
+                
+                /* Greet the User */
+                this._greetUser(newState);
+            } 
             
-            /* Greet the User */
-            this._greetUser(newState);
-        } 
-        
-        /* Detect if user disconnected from channel */
-        else if (newState.channel === null) {
-            Logger.verbose('Bot', 2, 'User "' + oldState.member.displayName + '" disconnected from channel ' + oldState.channel.id + '.');
-        }
-        
-        /* Detect if user moved between channels */
-        else if (oldState.channel !== null && newState.channel !== null) {
-            Logger.verbose('Bot', 2, 'User "' + oldState.member.displayName + '" moved to channel ' + newState.channel.id + ' from ' + oldState.channel.id + '.');
+            /* Detect if user disconnected from channel */
+            else if (newState.channel === null) {
+                Logger.verbose('Bot', 2, 'User "' + oldState.member.displayName + '" disconnected from channel ' + oldState.channel.id + '.');
+            }
+            
+            /* Detect if user moved between channels */
+            else if (oldState.channel !== null && newState.channel !== null) {
+                Logger.verbose('Bot', 2, 'User "' + oldState.member.displayName + '" moved to channel ' + newState.channel.id + ' from ' + oldState.channel.id + '.');
 
-            /* Greet the User */
-            this._greetUser(newState);
+                /* Greet the User */
+                this._greetUser(newState);
+            }
         }
     }
 
-    _detectBotOrSelf(states = []) {
+    _detectSelf(states = []) {
         for (const state of states) {
             if (state.member && this.client.user && (state.member.id === this.client.user.id)) {
                 return true;
