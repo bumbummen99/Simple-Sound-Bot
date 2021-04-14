@@ -1,6 +1,5 @@
 const Logger = require('../Logger.js');
 const StreamDispatcherWrapper = require('./StreamDispatcherWrapper.js');
-const db = require('../../models/index.js');
 const StreamDispatcherManager = require('./StreamDispatcherManager.js');
 const Queue = require('../Player/Queue.js');
 
