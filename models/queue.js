@@ -16,11 +16,23 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Queue.init({
+    guildId: DataTypes.STRING,
+    clientId: DataTypes.STRING,
     path: DataTypes.STRING,
     name: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Queue',
+    indexes: [
+      {
+        unique: false,
+        fields: ['guildId']
+      },
+      {
+        unique: false,
+        fields: ['clientId']
+      }
+    ]
   });
   return Queue;
 };

@@ -1,17 +1,16 @@
-const AbstractCommand = require('../core/Commands/AbstractCommand.js');
-const AudioClient = require('../core/AudioClient/AudioClient.js'); 
 const PollyTTS = require('../core/PollyTTS.js');
 const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
+const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 
-class TTSCommand extends AbstractCommand {
+class TTSCommand extends PlayerCommand {
     constructor() {
         super('tts', {
            aliases: ['tts'] 
         });
     }
 
-    async childExec(message) {
+    async playerExec(message, audioClient) {
         /* Get the TTS text from the message */
         const text = CommandHelper.getCleared(this.id, message);
 
@@ -22,7 +21,7 @@ class TTSCommand extends AbstractCommand {
 
         /* Play the generated audio file */
         Logger.verbose('Commands', 1, '[TTS] Playing input from: "' + audioFile + '"');
-        AudioClient.playBetween(audioFile);
+        audioClient.playBetween(audioFile);
 
         message.util.reply('Doing as you demand...');
     }

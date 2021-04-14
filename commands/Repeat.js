@@ -1,15 +1,14 @@
-const AbstractCommand = require('../core/Commands/AbstractCommand.js');
-const AudioClient = require('../core/AudioClient/AudioClient.js');
+const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 
-class RepeatCommand extends AbstractCommand {
+class RepeatCommand extends PlayerCommand {
     constructor() {
         super('repeat', {
            aliases: ['repeat'] 
         });
     }
 
-    async childExec(message) {
-        const state = AudioClient.toggleRepeat();
+    async playerExec(message, audioClient) {
+        const state = audioClient.toggleRepeat();
 
         message.util.reply((state ? 'Enabled' : 'Disabled') + ' track repeat.');
     }

@@ -1,5 +1,4 @@
 const AbstractCommand = require('../core/Commands/AbstractCommand.js');
-const AudioClient = require('../core/AudioClient/AudioClient.js');
 const Logger = require('../core/Logger.js');
 
 class PauseCommand extends AbstractCommand {
@@ -9,10 +8,11 @@ class PauseCommand extends AbstractCommand {
         });
     }
 
-    async childExec(message) {
+    async playerExec(message, audioClient) {
         Logger.verbose('Commands', 1, '[Pause] Pause command received, pausing playback...');
 
-        AudioClient.pause();
+        /* Pause the playback */
+        audioClient.pause();
 
         message.util.reply('Doing as you demand...');
     }

@@ -1,16 +1,15 @@
-const AbstractCommand = require('../core/Commands/AbstractCommand.js');
-const AudioClient = require('../core/AudioClient/AudioClient.js'); 
 const PollyTTS = require('../core/PollyTTS.js');
 const Logger = require('../core/Logger.js');
+const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 
-class SummonCommand extends AbstractCommand {
+class SummonCommand extends PlayerCommand {
     constructor() {
         super('summon', {
            aliases: ['summon'] 
         });
     }
 
-    async childExec(message) {
+    async playerExec(message, audioClient) {
         Logger.verbose('Commands', 1, '[Summon] Summon command received.');
 
         /* Check if the author is in a voice channel */
@@ -19,7 +18,7 @@ class SummonCommand extends AbstractCommand {
         }
 
         /* Join the message authors channel */
-        await AudioClient.join(message.member.voice.channel);
+        await audioClient.join(message.member.voice.channel);
 
         /* Greet the channel with a slight delay */
         setTimeout(async () => {

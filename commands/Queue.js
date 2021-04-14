@@ -10,7 +10,7 @@ class QueueCommand extends PlayerCommand {
         });
     }
 
-    async childExec(message) {
+    async playerExec(message, audioClient) {
         /* Get YouTube URLfrom the message */
         const input = CommandHelper.getCleared(this.id, message);
 
@@ -31,7 +31,7 @@ class QueueCommand extends PlayerCommand {
             }
 
             Logger.verbose('Commands', 1, '[Queue] Trying to play "' + audioData.name + '" from path "' + audioData.path + '"');
-            await AudioClient.queue(audioData.path, audioData.name);
+            await audioClient.queue(audioData.path, audioData.name);
 
             message.util.reply('Added "' + audioData.name + '" to the queue.');
         }

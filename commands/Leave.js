@@ -1,5 +1,4 @@
 const AbstractCommand = require('../core/Commands/AbstractCommand.js');
-const AudioClient = require('../core/AudioClient/AudioClient.js'); 
 const Logger = require('../core/Logger.js');
 
 class LeaveCommand extends AbstractCommand {
@@ -9,11 +8,11 @@ class LeaveCommand extends AbstractCommand {
         });
     }
 
-    async childExec(message) {
+    async playerExec(message, audioClient) {
         Logger.verbose('Commands', 1, '[Leave] Leave command received, leaving...');
 
         /* Disconnect the AudioClient */
-        await AudioClient.leave();
+        await audioClient.leave();
 
         Logger.verbose('Commands', 1, '[Leave] Bot left the current channel.');
 

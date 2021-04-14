@@ -1,18 +1,17 @@
-const AbstractCommand = require('../core/Commands/AbstractCommand.js');
-const AudioClient = require('../core/AudioClient/AudioClient.js');
 const Logger = require('../core/Logger.js');
+const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 
-class SkipCommand extends AbstractCommand {
+class SkipCommand extends PlayerCommand {
     constructor() {
         super('skip', {
            aliases: ['skip'] 
         });
     }
 
-    async childExec(message) {
+    async playerExec(message, audioClient) {
         Logger.verbose('Commands', 1, '[Skip] Skip command received, Skip playback...');
 
-        await AudioClient.skip();
+        await audioClient.skip();
 
         message.util.reply('Doing as you demand...');
     }

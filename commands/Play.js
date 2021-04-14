@@ -1,5 +1,4 @@
 const PlayerCommand = require('../core/Commands/PlayerCommand.js');
-const AudioClient = require('../core/AudioClient/AudioClient.js');
 const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
 
@@ -10,7 +9,7 @@ class PlayCommand extends PlayerCommand {
         });
     }
 
-    async childExec(message) {
+    async playerExec(message, audioClient) {
         /* Get YouTube URLfrom the message */
         const input = CommandHelper.getCleared(this.id, message);
 
@@ -19,14 +18,14 @@ class PlayCommand extends PlayerCommand {
         /* If no URL has been supplied we have to check if the AudioClient is paused and can be resumed */
         if (!input.length) {
             Logger.verbose('Commands', 1, '[Play] No input provided, trying to resume playback or play next in queue.');
-            if (AudioClient.isPaused()) {
-                AudioClient.resume();
+            if (audioClient.isPaused()) {
+                audioClient.resume();
 
                 return message.reply('Trying to resume current playback...');
             } else {
                 return Promise.all([
                     message.reply('Trying to play next in queue...'),
-                    await AudioClient.next(),
+                    await audioClient.next(),
                 ]);
             }
         } else {
@@ -40,7 +39,7 @@ class PlayCommand extends PlayerCommand {
             }
 
             Logger.verbose('Commands', 1, '[Play] Trying to play "' + audioData.name + '" from path "' + audioData.path + '"');
-            AudioClient.play(audioData.path);
+            audioClient.play(audioData.path);
 
             message.reply('Now playing "' + audioData.name + '".');
         }

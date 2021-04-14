@@ -66,6 +66,21 @@ class WikiPedia {
     static getCachePath(page) {
         return path.resolve(process.cwd() + '/cache/wikipedia/' + md5(language + page) + '.json');
     }
+
+    static generateEmbed(pageData) {
+        return {
+            embed: {
+                color: 3447003,
+                url: pageData.url,
+                title: (pageData.title ? pageData.title : null) ?? text,
+                image: {
+                    url: pageData.image,
+                },
+                description: String.excerpt(pageData.extract, 2048),
+                timestamp: new Date(),
+            }
+        }
+    }
 }
 
 module.exports = WikiPedia;

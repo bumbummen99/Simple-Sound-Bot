@@ -1,16 +1,15 @@
-const AbstractCommand = require('../core/Commands/AbstractCommand.js');
-const AudioClient = require('../core/AudioClient/AudioClient.js'); 
 const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
+const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 
-class LeaveCommand extends AbstractCommand {
+class LeaveCommand extends PlayerCommand {
     constructor() {
         super('volume', {
            aliases: ['volume'] 
         });
     }
 
-    async childExec(message) {
+    async playerExec(message, audioClient) {
         /* Try to get the volume from the command */
         const input = CommandHelper.getCleared(this.id, message);
 
@@ -35,7 +34,7 @@ class LeaveCommand extends AbstractCommand {
         Logger.verbose('Commands', 1, '[Volume] Input normalized to: "' + volume + '"');
 
         /* Set the volume on the AudioClient */
-        await AudioClient.volume(volume);
+        await audioClient.volume(volume);
 
         Logger.verbose('Commands', 1, '[Volume] Set volume to "' + volume + '".');
         return message.util.reply('Set bot volume to "' + volume + '"');

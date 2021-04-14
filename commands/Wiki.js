@@ -1,8 +1,9 @@
-const WikipediaCommand = require('../core/Commands/WikipediaCommand.js');
 const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
+const WikiPedia = require('../core/Wikipedia.js');
+const AbstractCommand = require('../core/Commands/AbstractCommand.js');
 
-class WikiCommand extends WikipediaCommand {
+class WikiCommand extends AbstractCommand {
     constructor() {
         super('wiki', {
            aliases: ['wiki'] 
@@ -18,7 +19,7 @@ class WikiCommand extends WikipediaCommand {
         /* Fetch the page */
         let pageData = null;
         try {
-            pageData = await this.getPageData(title);
+            pageData = await WikiPedia.getPageData(title);
         } catch (e) {
             /* Check if there was an error getting the page */
             if (e.name === 'pageError' && e.message.includes('No page with given title exists :')) {
@@ -30,7 +31,7 @@ class WikiCommand extends WikipediaCommand {
         }
 
         /* Post an embed with the data */
-        return message.util.reply(this.generateEmbed(pageData));
+        return message.util.reply(WikiPedia.generateEmbed(pageData));
     }
 }
 

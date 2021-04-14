@@ -3,8 +3,17 @@ const path = require('path');
 const YouTube = require("../YouTube");
 const ytsr = require('ytsr');
 const AbstractCommand = require("./AbstractCommand");
+const GuildsManager = require("../AudioClient/GuildsManger");
 
 class PlayerCommand extends AbstractCommand {
+    getAudioClientForGuild(message) {
+        if (message.guild) {
+            return GuildsManager.get(message.guild.id);
+        }
+        
+        return null;
+    }
+
     async getAudioData(input) {
         let cachePath = null;
         let name = null;
@@ -53,6 +62,18 @@ class PlayerCommand extends AbstractCommand {
         } else {
             return null;
         }
+    }
+
+    childExec(message) {
+        if (!message.guild) {
+            return this.playerExec(message, this.getAudioClientForGuild(message.guild.id));
+        } else {
+            return message.util.reply('This command can only be run on a server.');
+        }
+    }
+
+    playerExec(message, audioClient) {
+        throw new Error('Not implemented!');
     }
 }
 

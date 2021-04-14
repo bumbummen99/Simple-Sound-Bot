@@ -2,10 +2,12 @@ const Logger = require('../Logger.js');
 const StreamDispatcherWrapper = require('./StreamDispatcherWrapper.js');
 const db = require('../../models/index.js');
 const StreamDispatcherManager = require('./StreamDispatcherManager.js');
-const { get } = require('../Downloader.js');
+const Queue = require('../Player/Queue.js');
 
 class AudioClient {
-    constructor() {
+    constructor(guildId) {
+        this._guildId = guildId;
+
         this._queueID = null;
 
         this._repeat = false;
@@ -54,26 +56,6 @@ class AudioClient {
         }
     }
 
-    async queue(path, name) {
-        /* Create the model in the database */
-        await db.Queue.create({
-            path: path,
-            name: name,
-        });
-
-        Logger.verbose('AudioClient', 1, `Added URI "${path}" with name "${name}" to the Queue.`);
-    }
-
-    clearQueue() {
-        /* Remove all items from queue */
-        db.Queue.destroy({
-            where: {},
-            truncate: true
-        });
-
-        Logger.verbose('AudioClient', 1, 'Cleared the whole Queue.');
-    }
-
     async next(uri) {
         if (this._repeat) {
             Logger.verbose('AudioClient', 1, 'Repeating current track.');
@@ -83,19 +65,15 @@ class AudioClient {
 
         /* Remove finished queue item */
         if (this._queueID !== null) {
-            await db.Queue.destroy({
-                where: {
-                    id: this._queueID,
-                }
-            });      
+            Queue.removeEntry(this._queueID);    
         }
 
         /* Get first queue item */
-        const entry = await db.Queue.findOne();
+        const entry = Queue.nextInQueue(this._guildId);
         
         /* Set and play the item if there is any */
         if (entry) {
-            Logger.verbose('AudioClient', 1, `Trying to play queued entry ${entry.id} with path ${entry.path}`);
+            Logger.verbose('AudioClient', 1, `Trying to play queued entry ${entry.id} with path ${entry.path} for guild ${this._guildId}`);
             this._queueID = entry.id;
             this.play(entry.path);
         }
@@ -292,4 +270,4 @@ class AudioClient {
     }
 }
 
-module.exports = new AudioClient();
+module.exports = AudioClient;
