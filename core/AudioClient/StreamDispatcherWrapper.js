@@ -1,4 +1,3 @@
-const { StreamDispatcher } = require("discord.js");
 const EventEmitter = require("events");
 
 class StreamDispatcherWrapper extends EventEmitter {
@@ -6,6 +5,7 @@ class StreamDispatcherWrapper extends EventEmitter {
         super();
 
         this._finished = false;
+        this._paused = false;
 
         this.setDispatcher(dispatcher);
     }
@@ -15,6 +15,8 @@ class StreamDispatcherWrapper extends EventEmitter {
         this._dispatcher = dispatcher;
 
         this.attachListeners();
+
+        this._paused = false;
     }
 
     /**
@@ -53,6 +55,8 @@ class StreamDispatcherWrapper extends EventEmitter {
         if (!this._finished) {
             this._dispatcher.pause();
 
+            this._paused = true;
+
             this.emit('paused');
 
             return true;
@@ -64,6 +68,8 @@ class StreamDispatcherWrapper extends EventEmitter {
     resume() {
         if (!this._finished) {
             this._dispatcher.resume();
+
+            this._paused = false;
 
             this.emit('resumed');
 
@@ -104,7 +110,7 @@ class StreamDispatcherWrapper extends EventEmitter {
     }
 
     isPaused() {
-        return this._dispatcher.paused;
+        return this._paused;
     }
 }
 

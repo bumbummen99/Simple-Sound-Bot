@@ -13,14 +13,19 @@ class SummonCommand extends AbstractCommand {
     async childExec(message) {
         Logger.verbose('Commands', 1, '[Summon] Summon command received.');
 
+        /* Check if the author is in a voice channel */
+        if (!message.member.voice.channel) {
+            message.util.reply('You are not in a voice channel!');
+        }
+
         /* Join the message authors channel */
         await AudioClient.join(message.member.voice.channel);
 
+        /* Greet the channel with a slight delay */
         setTimeout(async () => {
             AudioClient.playBetween(await PollyTTS.generate(process.env.GREET_TEMPLATE));
-        }, 333);
+        }, 500);
         
-
         Logger.verbose('Commands', 1, '[Summon] Summoned the bot.');
     }
 }

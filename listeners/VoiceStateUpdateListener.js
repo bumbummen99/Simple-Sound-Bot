@@ -1,5 +1,4 @@
 const { Listener } = require('discord-akairo');
-const Bot = require('../Bot');
 const AudioClient = require('../core/AudioClient/AudioClient');
 const Logger = require('../core/Logger');
 const PollyTTS = require('../core/PollyTTS');
@@ -10,6 +9,8 @@ class VoiceStateUpdateListener extends Listener {
             emitter: 'client',
             event: 'voiceStateUpdate'
         });
+
+        this._leaveTimeout = null;
     }
 
     exec(oldState, newState) {
@@ -18,11 +19,13 @@ class VoiceStateUpdateListener extends Listener {
         if (botVoiceChannel) {
             /* Check if the Bot is the only one left in the channel */
             if (botVoiceChannel.members.size <= 1) {
-                Logger.verbose('Bot', 2, 'Bot-Channel is empty, pausing.');
-                AudioClient.pause();
+                Logger.verbose('Bot', 2, 'Bot-Channel is empty.');
+                
+                this._startLeaveTimeout();
             } else {
-                Logger.verbose('Bot', 2, 'Bot-Channel has users, resuming.');
-                AudioClient.resume();
+                Logger.verbose('Bot', 2, 'Bot-Channel not empty.');
+
+                this._clearTimeout();
             }
         }
 
@@ -42,12 +45,31 @@ class VoiceStateUpdateListener extends Listener {
             }
             
             /* Detect if user moved between channels */
-            else if (oldState.channel !== null && newState.channel !== null) {
+            else if (oldState.channel !== null && newState.channel !== null && oldState.channel.id !== newState.channel.id) {
                 Logger.verbose('Bot', 2, 'User "' + oldState.member.displayName + '" moved to channel ' + newState.channel.id + ' from ' + oldState.channel.id + '.');
 
                 /* Greet the User */
                 this._greetUser(newState);
             }
+        }
+    }
+
+    _clearTimeout() {
+        if (this._leaveTimeout) {
+            clearTimeout(this._leaveTimeout);
+            this._leaveTimeout = null;
+
+            Logger.verbose('Bot', 3, 'Cleared leave timeout.');
+        }
+    }
+
+    _startLeaveTimeout() {
+        if (!this._leaveTimeout) {
+            this._leaveTimeout = setTimeout(() => {
+                AudioClient.leave();
+            }, 5 * 60 * 1000);
+
+            Logger.verbose('Bot', 3, 'Started leave timeout.');
         }
     }
 

@@ -6,8 +6,6 @@ const { get } = require('../Downloader.js');
 
 class AudioClient {
     constructor() {
-        this._uri = null;
-
         this._queueID = null;
 
         this._repeat = false;
@@ -23,20 +21,9 @@ class AudioClient {
         this.streamOptions = {
             volume: 1,
         }
-
-        this._times = [];
     }
 
     async join(channel) {
-        let resume = null;
-        if (this.hasDispatcher() && !this.getDispatcher().isFinished() && !this.getDispatcher().isPaused()) {
-            Logger.verbose('AudioClient', 1, 'Join detected previous dispatcher, pausing...');
-
-            this.pause();
-
-            resume = this.getDispatcherData();
-        }
-
         /* Join the voice channel and wait for the connection */
         this.connection = await channel.join();
 
@@ -44,13 +31,6 @@ class AudioClient {
         this.connection.setSpeaking(0);
 
         Logger.verbose('AudioClient', 1, 'Successfully connected to channel "' + channel.name + '"');
-
-        if (resume) {
-            Logger.verbose('AudioClient', 1, 'Resuming previous playback at time "' + resume.time + '"...');
-            this.play(resume.uri, resume.playBetween, resume.time, resume.dispatcher, resume.id);
-
-            this.getDispatcher().setDispatcher();
-        }
     }
 
     leave() {
@@ -194,13 +174,11 @@ class AudioClient {
             /* Set speaking state */
             this.connection.setSpeaking(0);
 
-            Logger.verbose('AudioClient', 1, 'Paused the current dispatcher.');
-
             this.getDispatcherData().time += this.getDispatcher().getTotalStreamTime();
+
+            Logger.verbose('AudioClient', 1, `Paused the current dispatcher at ${this.getDispatcherData().time}ms.`);
         } else {
             Logger.verbose('AudioClient', 1, 'There is no dispatcher to pause.');
-
-            return 0;
         }
     }
 
@@ -273,6 +251,10 @@ class AudioClient {
         return null;
     }
 
+    /**
+     * 
+     * @returns {StreamDispatcherWrapper}
+     */
     getDispatcher() {
         if (this._currentDispatcherIdentifier) {
             const data = this._dispatcherManager.get(this._currentDispatcherIdentifier);
