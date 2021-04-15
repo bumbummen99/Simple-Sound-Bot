@@ -13,7 +13,7 @@ class Queue {
         Logger.verbose('AudioClient', 1, `Added URI "${path}" with name "${name}" to the Queue.`);
     }
 
-    static clearQueue(guildId) {
+    static async clearQueue(guildId) {
         /* Remove all items from queue */
         await db.Queue.destroy({
             where: {
@@ -25,8 +25,16 @@ class Queue {
         Logger.verbose('AudioClient', 1, `Cleared the whole Queue for guild ${guildId}.`);
     }
 
+    static async queueSize(guildId) {
+        return await db.Queue.count({
+            where: {
+                guildId: guildId,
+            }
+        });
+    }
+
     static async nextInQueue(guildId) {
-        await db.Queue.findOne({
+        return await db.Queue.findOne({
             where: {
                 guildId: guildId,
             }

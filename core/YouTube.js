@@ -2,6 +2,7 @@ const md5 = require('md5');
 const ytdl = require('ytdl-core');
 const fs = require('fs')
 const path = require('path');
+const urlStatusCode = require('url-status-code')
 
 const db = require('../models/index.js');
 const Logger = require('./Logger.js');
@@ -36,13 +37,22 @@ class YouTube {
             /* Fetch the video info with youtube dl */
             const info = await ytdl.getInfo(url);
 
+            /* Get corrent thumbnail url */
+            let thumbnail = `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+            if (await urlStatusCode(thumbnail) === 404) {
+                thumbnail = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+            }
+
             /* Create the model in the database */
             video = await db.Video.create({
                 name: info.videoDetails.title,
                 description: info.videoDetails.description,
-                thumbnail: info.thumbnail_url,
-                videoID: info.id,
+                uri: url,
+                thumbnail: thumbnail,
+                videoID: id,
             });
+        } else {
+            Logger.verbose('Commands', 1, '[YouTube] Video "' + id + '" found in database!', 'blueBright');
         }
 
         if (!fs.existsSync(YouTube.getCachePath(id))) {

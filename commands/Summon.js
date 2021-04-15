@@ -9,7 +9,7 @@ class SummonCommand extends PlayerCommand {
         });
     }
 
-    async playerExec(message, audioClient) {
+    async playerExec(message) {
         Logger.verbose('Commands', 1, '[Summon] Summon command received.');
 
         /* Check if the author is in a voice channel */
@@ -17,12 +17,14 @@ class SummonCommand extends PlayerCommand {
             message.util.reply('You are not in a voice channel!');
         }
 
+        const audioClient = this.getAudioClientForGuild(message.guild.id);
+
         /* Join the message authors channel */
         await audioClient.join(message.member.voice.channel);
 
         /* Greet the channel with a slight delay */
         setTimeout(async () => {
-            AudioClient.playBetween(await PollyTTS.generate(process.env.GREET_TEMPLATE));
+            audioClient.playBetween(await PollyTTS.generate(process.env.GREET_TEMPLATE));
         }, 500);
         
         Logger.verbose('Commands', 1, '[Summon] Summoned the bot.');

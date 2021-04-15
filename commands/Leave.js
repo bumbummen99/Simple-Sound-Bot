@@ -1,15 +1,17 @@
-const AbstractCommand = require('../core/Commands/AbstractCommand.js');
+const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 const Logger = require('../core/Logger.js');
 
-class LeaveCommand extends AbstractCommand {
+class LeaveCommand extends PlayerCommand {
     constructor() {
         super('leave', {
            aliases: ['leave'] 
         });
     }
 
-    async playerExec(message, audioClient) {
+    async playerExec(message) {
         Logger.verbose('Commands', 1, '[Leave] Leave command received, leaving...');
+        
+        const audioClient = this.getAudioClientForGuild(message.guild.id);
 
         /* Disconnect the AudioClient */
         await audioClient.leave();

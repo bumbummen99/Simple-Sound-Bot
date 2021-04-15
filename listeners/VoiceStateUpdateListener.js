@@ -16,7 +16,7 @@ class VoiceStateUpdateListener extends Listener {
 
     exec(oldState, newState) {
         /* Check if the audio client(s) channel is populated */
-        if (this._detectChannelSwitched([oldState, newState])) {
+        if (this._detectChannelSwitched(oldState, newState)) {
             for (const guildId of this._getGuildIds([oldState, newState])) {
                 /* Check if there is an AudioClient for the guild */
                 if (GuildsManger.has(guildId)) {
@@ -24,15 +24,19 @@ class VoiceStateUpdateListener extends Listener {
                     const audioClient = GuildsManger.get(guildId);
     
                     /* Check if the Bot is the only one left in the channel */
-                    if (audioClient.getVoiceChannel().members.size <= 1) {
-                        Logger.verbose('Bot', 2, 'Bot-Channel is empty.');
-                        
-                        GuildsManger.startTimeout(guildId);
-                    } else {
-                        Logger.verbose('Bot', 2, 'Bot-Channel not empty.');
-    
-                        GuildsManger.stopTimeout(guildId);
-                    } 
+                    if (audioClient.getVoiceChannel()) {
+                        if (audioClient.getVoiceChannel().members.size <= 1 && !GuildsManger.isPersistent(guildId)) {
+                            Logger.verbose('Bot', 2, 'Bot-Channel is empty.');
+                            
+                            if (!GuildsManger.isPersistent(guildId)) {
+                                GuildsManger.startTimeout(guildId);
+                            }
+                        } else {
+                            Logger.verbose('Bot', 2, 'Bot-Channel not empty.');
+        
+                            GuildsManger.stopTimeout(guildId);
+                        } 
+                    }
                 }
             }
         }
@@ -105,7 +109,7 @@ class VoiceStateUpdateListener extends Listener {
     _getGuildIds(states = []) {
         const out = [];
         for (const state of states) {
-            if (state.guild) {
+            if (state.guild && !out.includes(state.guild.id)) {
                 out.push(state.guild.id)
             }
         }

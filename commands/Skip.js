@@ -8,8 +8,10 @@ class SkipCommand extends PlayerCommand {
         });
     }
 
-    async playerExec(message, audioClient) {
+    async playerExec(message) {
         Logger.verbose('Commands', 1, '[Skip] Skip command received, Skip playback...');
+
+        const audioClient = this.getAudioClientForGuild(message.guild.id);
 
         await audioClient.skip();
 

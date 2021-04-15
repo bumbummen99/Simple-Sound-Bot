@@ -6,8 +6,8 @@ const { exit } = require('process');
 const packageJSON = require('./package.json');
 const Logger = require('./core/Logger.js');
 const Bot = require('./Bot.js');
-const AudioClient = require('./core/AudioClient/AudioClient.js');
 const WikiPedia = require('./core/Wikipedia');
+const GuildsManger = require('./core/AudioClient/GuildsManger');
 
 /* Wrap in async self executing anonymous arrow function so we can await */
 (async () => {
@@ -52,12 +52,14 @@ const WikiPedia = require('./core/Wikipedia');
     /* Configure Logger */
     const verbosity = args['--verbose'] ?? 0;
     Logger.setVerboseness('Bootstrap', verbosity).setModuleColor('Bootstrap', 'greenBright');
-    Logger.setVerboseness('Bot', verbosity).setModuleColor('Bot', 'grey');
+    Logger.setVerboseness('Bot', verbosity).setModuleColor('Bot', 'greenBright');
     Logger.setVerboseness('Commands', verbosity).setModuleColor('Commands', 'green');
+    Logger.setVerboseness('CommandHelper', verbosity).setModuleColor('CommandHelper', 'green');
     Logger.setVerboseness('Player', verbosity).setModuleColor('Player', 'blue');
     Logger.setVerboseness('AudioClient', verbosity).setModuleColor('AudioClient', 'blue');
-    Logger.setVerboseness('CommandHelper', verbosity).setModuleColor('CommandHelper', 'grey');
+    Logger.setVerboseness('GuildsManager', verbosity).setModuleColor('GuildsManager', 'blue');
     Logger.setVerboseness('YouTube', verbosity).setModuleColor('YouTube', 'blue');
+    Logger.setVerboseness('TrackData', verbosity).setModuleColor('TrackData', 'grey');
     Logger.verbose('Bootstrap', 1, 'Set verosity to "' + verbosity + '"');
 
     /* Configure Wikipedia */
@@ -71,7 +73,7 @@ const WikiPedia = require('./core/Wikipedia');
     const shutdown = () => {
         Logger.verbose('Bootstrap', 1, 'Received termination signal, shutting down gracefully...');
 
-        AudioClient.leave();
+        GuildsManger.destroy();
         client.destroy();
 
         Logger.verbose('Bootstrap', 1, 'Shutdown complete! Bye :)');
@@ -84,6 +86,4 @@ const WikiPedia = require('./core/Wikipedia');
 
     /* Login with the provided DISCORD_BOT_TOKEN */
     client.login(process.env.DISCORD_BOT_TOKEN);
-
-    
 })();

@@ -9,7 +9,7 @@ class LeaveCommand extends PlayerCommand {
         });
     }
 
-    async playerExec(message, audioClient) {
+    async playerExec(message) {
         /* Try to get the volume from the command */
         const input = CommandHelper.getCleared(this.id, message);
 
@@ -32,6 +32,8 @@ class LeaveCommand extends PlayerCommand {
         }
 
         Logger.verbose('Commands', 1, '[Volume] Input normalized to: "' + volume + '"');
+
+        const audioClient = this.getAudioClientForGuild(message.guild.id);
 
         /* Set the volume on the AudioClient */
         await audioClient.volume(volume);

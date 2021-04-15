@@ -6,24 +6,28 @@ const AbstractCommand = require('../core/Commands/AbstractCommand.js');
 class WikiCommand extends AbstractCommand {
     constructor() {
         super('wiki', {
-           aliases: ['wiki'] 
+            aliases: ['wiki'],
+            args: [
+                {
+                    id: 'title',
+                    type: 'string',
+                    default: ''
+                },
+            ]
         });
     }
 
     async childExec(message) {
-        /* Get the TTS text from the message */
-        const title = CommandHelper.getCleared(this.id, message);
-
-        Logger.verbose('Commands', 1, '[Wiki] Wiki command received. Input: "' + title + '"');
+        Logger.verbose('Commands', 1, '[Wiki] Wiki command received. Input: "' + args.title + '"');
 
         /* Fetch the page */
         let pageData = null;
         try {
-            pageData = await WikiPedia.getPageData(title);
+            pageData = await WikiPedia.getPageData(args.title);
         } catch (e) {
             /* Check if there was an error getting the page */
             if (e.name === 'pageError' && e.message.includes('No page with given title exists :')) {
-                return message.util.reply('Could not find any page for "' + title + '".');
+                return message.util.reply('Could not find any page for "' + args.title + '".');
             }
 
             /* Just re-throw unhandled errors */

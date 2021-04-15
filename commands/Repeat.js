@@ -7,7 +7,9 @@ class RepeatCommand extends PlayerCommand {
         });
     }
 
-    async playerExec(message, audioClient) {
+    async playerExec(message) {
+        const audioClient = this.getAudioClientForGuild(message.guild.id);
+        
         const state = audioClient.toggleRepeat();
 
         message.util.reply((state ? 'Enabled' : 'Disabled') + ' track repeat.');

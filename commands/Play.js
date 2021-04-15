@@ -1,47 +1,56 @@
 const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
+const Queue = require('../core/Player/Queue.js');
 
 class PlayCommand extends PlayerCommand {
     constructor() {
         super('play', {
-           aliases: ['play'] 
+            aliases: ['play'],
+            args: [
+                {
+                    id: 'input',
+                    type: 'string',
+                    default: ''
+                },
+            ]
         });
     }
 
-    async playerExec(message, audioClient) {
-        /* Get YouTube URLfrom the message */
-        const input = CommandHelper.getCleared(this.id, message);
+    async playerExec(message, args) {
+        Logger.verbose('Commands', 1, '[Play] Play command received. Input: "' + args.input + '"');
 
-        Logger.verbose('Commands', 1, '[Play] Play command received. Input: "' + input + '"');
+        const audioClient = this.getAudioClientForGuild(message.guild.id);
 
         /* If no URL has been supplied we have to check if the AudioClient is paused and can be resumed */
-        if (!input.length) {
+        if (!args.input.length) {
             Logger.verbose('Commands', 1, '[Play] No input provided, trying to resume playback or play next in queue.');
             if (audioClient.isPaused()) {
                 audioClient.resume();
 
-                return message.reply('Trying to resume current playback...');
-            } else {
+                return message.util.reply('Trying to resume current playback...');
+            } else if (await Queue.queueSize(message.guild.id)) {
                 return Promise.all([
-                    message.reply('Trying to play next in queue...'),
+                    message.util.reply('Trying to play next in queue...'),
                     await audioClient.next(),
                 ]);
+            } else {
+                return message.util.reply('There is nothing to resume or play, please provide an input.');
             }
         } else {
             /* Try to extract the videoID from the URL */
-            const audioData = await this.getAudioData(input);
+            const trackData = await this.getTrackData(args.input);
 
             /* Verify that we have the videoID and thereby a valid YouTube URL */
-            if (!audioData) {
-                Logger.verbose('Commands', 1, '[Play] No results found for: "' + input + '"', 'yellow');
-                return message.reply('No results found for: "' + input + '"');
+            if (!trackData) {
+                Logger.verbose('Commands', 1, '[Play] No results found for: "' + args.input + '"', 'yellow');
+                return message.util.reply('No results found for: "' + args.input + '"');
             }
 
-            Logger.verbose('Commands', 1, '[Play] Trying to play "' + audioData.name + '" from path "' + audioData.path + '"');
-            audioClient.play(audioData.path);
+            Logger.verbose('Commands', 1, '[Play] Trying to play "' + trackData.getName() + '" from path "' + trackData.getPath() + '"');
+            audioClient.play(trackData.getPath());
 
-            message.reply('Now playing "' + audioData.name + '".');
+            return message.util.reply(trackData.getEmbed());
         }
     }
 }

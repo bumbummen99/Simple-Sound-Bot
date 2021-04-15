@@ -3,6 +3,7 @@ const path = require('path')
 const wiki = require('wikipedia').default;
 const md5 = require('md5');;
 const FileSystem = require('./FileSystem');
+const String = require('./Helpers/String');
 
 let language = 'en';
 

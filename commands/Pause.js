@@ -1,15 +1,17 @@
-const AbstractCommand = require('../core/Commands/AbstractCommand.js');
+const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 const Logger = require('../core/Logger.js');
 
-class PauseCommand extends AbstractCommand {
+class PauseCommand extends PlayerCommand {
     constructor() {
         super('pause', {
            aliases: ['pause'] 
         });
     }
 
-    async playerExec(message, audioClient) {
+    async playerExec(message) {
         Logger.verbose('Commands', 1, '[Pause] Pause command received, pausing playback...');
+
+        const audioClient = this.getAudioClientForGuild(message.guild.id);
 
         /* Pause the playback */
         audioClient.pause();

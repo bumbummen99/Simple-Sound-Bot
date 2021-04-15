@@ -1,3 +1,4 @@
+const Logger = require("../Logger");
 const AudioClient = require("./AudioClient");
 
 class GuildsManager {
@@ -16,6 +17,8 @@ class GuildsManager {
     get(guildId) {
         if (!this._audioClients.has(guildId)) {
             this._audioClients.set(guildId, new AudioClient(guildId));
+
+            Logger.verbose('GuildsManager', 1, `Created new AudioClient for guild ${guildId}.`);
         }
 
         return this._audioClients.get(guildId);
@@ -28,14 +31,33 @@ class GuildsManager {
         }
 
         this._audioClients.delete(guildId);
+
+        Logger.verbose('GuildsManager', 1, `Removed AudioClient for guild ${guildId}.`);
     }
 
     togglePersistance(guildId, newState = !this.isPersistent(guildId)) {
-        if (!newState) {
+        if (newState) {
             this._persistentClients[guildId] = true;
+
+            /* Stop any possible timeout */
+            this.stopTimeout(guildId);
         } else {
             delete this._persistentClients[guildId];
+
+            /* Check if there is an audio client for the guild */
+            if (this.has(guildId)) {
+                const audioClient = this.get(guildId);
+
+                /* Start the timeout if it has a channel that is empty */
+                if (audioClient.getVoiceChannel() && audioClient.getVoiceChannel().members.size <= 1) {
+                    this.startTimeout(guildId);
+                }
+            }
         }
+
+        Logger.verbose('GuildsManager', 1, `${newState ? 'Enabled' : 'Disabled'} AudioClient persistance for guild ${guildId}.`);
+
+        return newState;
     }
 
     isPersistent(guildId) {
@@ -45,17 +67,38 @@ class GuildsManager {
     startTimeout(guildId) {
         if (!this._leaveTimeouts.has(guildId)) {
             this._leaveTimeouts.set(guildId, setTimeout(() => {
-                return;
+                this.remove(guildId);
             }, 5 * 60 * 1000));
+
+            Logger.verbose('GuildsManager', 1, `Started AudioClient leave timeout for guild ${guildId}.`);
+        } else {
+            Logger.verbose('GuildsManager', 3, `Cant start leave timeout, no AudioClient for guild ${guildId}.`);
         }
     }
 
     stopTimeout(guildId) {
         if (this._leaveTimeouts.has(guildId)) {
             clearTimeout(this._leaveTimeouts.get(guildId));
+
+            this._leaveTimeouts.delete(guildId);
+
+            Logger.verbose('GuildsManager', 1, `Stopped AudioClient leave timeout for guild ${guildId}.`);
+        } else {
+            Logger.verbose('GuildsManager', 3, `Cant stop leave timeout, no timeout for guild ${guildId}.`);
+        }
+    }
+
+    destroy() {
+        /* Disconnect and delete all AudioClients */
+        for (const guildId of this._audioClients.keys()) {
+            const audioClient = this._audioClients.get(guildId);
+
+            audioClient.leave();
+
+            this._audioClients.delete(guildId);
         }
 
-        this._leaveTimeouts.delete(guildId);
+        Logger.verbose('GuildsManager', 1, `Closed all AudioClients.`);
     }
 }
 

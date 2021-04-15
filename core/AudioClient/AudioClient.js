@@ -64,14 +64,15 @@ class AudioClient {
 
         /* Remove finished queue item */
         if (this._queueID !== null) {
-            Queue.removeEntry(this._queueID);    
+            await Queue.removeEntry(this._queueID);    
         }
 
         /* Get first queue item */
-        const entry = Queue.nextInQueue(this._guildId);
+        const entry = await Queue.nextInQueue(this._guildId);
         
         /* Set and play the item if there is any */
         if (entry) {
+            Logger.verbose('AudioClient', 4, `Found entry: ${JSON.stringify(entry)}, Type: ${typeof entry}`);
             Logger.verbose('AudioClient', 1, `Trying to play queued entry ${entry.id} with path ${entry.path} for guild ${this._guildId}`);
             this._queueID = entry.id;
             this.play(entry.path);
