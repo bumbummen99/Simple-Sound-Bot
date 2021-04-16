@@ -49,14 +49,6 @@ class PlayerCommand extends AbstractCommand {
     }
 
     childExec(message, args) {
-        if (message.guild) {
-            return this.playerExec(message, args);
-        } else {
-            return message.util.reply('This command can only be run on a server.');
-        }
-    }
-
-    playerExec(message, args) {
         throw new Error('Not implemented!');
     }
 }

@@ -1,4 +1,3 @@
-const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
 const WikiPedia = require('../core/Wikipedia.js');
 const AbstractCommand = require('../core/Commands/AbstractCommand.js');
@@ -11,13 +10,15 @@ class WikiCommand extends AbstractCommand {
                 {
                     id: 'title',
                     type: 'string',
-                    default: ''
+                    default: '',
+                    match: 'rest',
                 },
-            ]
+            ],
+            quoted: false,
         });
     }
 
-    async childExec(message) {
+    async childExec(message, args) {
         Logger.verbose('Commands', 1, '[Wiki] Wiki command received. Input: "' + args.title + '"');
 
         /* Fetch the page */

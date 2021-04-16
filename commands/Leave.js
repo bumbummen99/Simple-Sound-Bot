@@ -4,11 +4,12 @@ const Logger = require('../core/Logger.js');
 class LeaveCommand extends PlayerCommand {
     constructor() {
         super('leave', {
-           aliases: ['leave'] 
+            aliases: ['leave'],
+            channel: 'guild',
         });
     }
 
-    async playerExec(message) {
+    async childExec(message) {
         Logger.verbose('Commands', 1, '[Leave] Leave command received, leaving...');
         
         const audioClient = this.getAudioClientForGuild(message.guild.id);

@@ -4,11 +4,12 @@ const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 class PersistentCommand extends PlayerCommand {
     constructor() {
         super('persistent', {
-           aliases: ['persistent'] 
+            aliases: ['persistent', 'persist', '24/7'],
+            channel: 'guild',
         });
     }
 
-    async playerExec(message) {
+    async childExec(message) {
         const state = GuildsManger.togglePersistance(message.guild.id);
 
         message.util.reply(`${state ? 'Enabled' : 'Disabled'} persistence.`);

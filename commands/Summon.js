@@ -5,11 +5,12 @@ const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 class SummonCommand extends PlayerCommand {
     constructor() {
         super('summon', {
-           aliases: ['summon'] 
+            aliases: ['summon'],
+            channel: 'guild',
         });
     }
 
-    async playerExec(message) {
+    async childExec(message) {
         Logger.verbose('Commands', 1, '[Summon] Summon command received.');
 
         /* Check if the author is in a voice channel */

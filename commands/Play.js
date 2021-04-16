@@ -1,5 +1,4 @@
 const PlayerCommand = require('../core/Commands/PlayerCommand.js');
-const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
 const Queue = require('../core/Player/Queue.js');
 
@@ -11,13 +10,16 @@ class PlayCommand extends PlayerCommand {
                 {
                     id: 'input',
                     type: 'string',
-                    default: ''
+                    default: '',
+                    match: 'rest',
                 },
-            ]
+            ],
+            quoted: false,
+            channel: 'guild',
         });
     }
 
-    async playerExec(message, args) {
+    async childExec(message, args) {
         Logger.verbose('Commands', 1, '[Play] Play command received. Input: "' + args.input + '"');
 
         const audioClient = this.getAudioClientForGuild(message.guild.id);

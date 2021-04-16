@@ -1,5 +1,4 @@
 const PollyTTS = require('../core/PollyTTS.js');
-const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
 const WikiPedia = require('../core/Wikipedia.js');
 const PlayerCommand = require('../core/Commands/PlayerCommand.js');
@@ -12,13 +11,16 @@ class TTSWikiCommand extends PlayerCommand {
                 {
                     id: 'title',
                     type: 'string',
-                    default: ''
+                    default: '',
+                    match: 'rest',
                 },
-            ]
+            ],
+            quoted: false,
+            channel: 'guild',
         });
     }
 
-    async playerExec(message, args) {
+    async childExec(message, args) {
         Logger.verbose('Commands', 1, '[TTSWiki] TTSWiki command received. Input: "' + args.title + '"');
 
         /* Get the WikiPedia page data */

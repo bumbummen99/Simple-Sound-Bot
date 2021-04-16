@@ -1,5 +1,4 @@
 const { Listener } = require('discord-akairo');
-const Logger = require('../core/Logger');
 
 class VoiceStateUpdateListener extends Listener {
     constructor() {
@@ -10,10 +9,37 @@ class VoiceStateUpdateListener extends Listener {
     }
 
     exec(message) {
-        if (message.content.startsWith(process.env.DISCORD_BOT_COMMAND_PREFIX)) {
-            Logger.verbose('Commands', 1, 'Invalid command detected: "' + message.content + '"');
-            message.util.reply('Sorry, that command is invalid');
+        //if (this.startsWithPrefixes(message.content)) {
+        //    message.util.reply('Sorry, that is not valid command.');
+        //}
+    }
+
+    startsWithPrefixes(input) {
+        for (const prefix of this.getPrefixes()) {
+            if (input.startsWith(prefix)) {
+                return true;
+            }
         }
+
+        return false;
+    }
+
+    getPrefixes() {
+        let prefixes = process.env.DISCORD_BOT_COMMAND_PREFIX;
+
+        if (this.isFunction(prefixes)) {
+            prefixes = prefixes();
+        }
+
+        if (!Array.isArray(prefixes)) {
+            prefixes = [prefixes];
+        }
+
+        return prefixes;
+    }
+
+    isFunction(functionToCheck) {
+        return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
     }
 }
 

@@ -54,7 +54,6 @@ const GuildsManger = require('./core/AudioClient/GuildsManger');
     Logger.setVerboseness('Bootstrap', verbosity).setModuleColor('Bootstrap', 'greenBright');
     Logger.setVerboseness('Bot', verbosity).setModuleColor('Bot', 'greenBright');
     Logger.setVerboseness('Commands', verbosity).setModuleColor('Commands', 'green');
-    Logger.setVerboseness('CommandHelper', verbosity).setModuleColor('CommandHelper', 'green');
     Logger.setVerboseness('Player', verbosity).setModuleColor('Player', 'blue');
     Logger.setVerboseness('AudioClient', verbosity).setModuleColor('AudioClient', 'blue');
     Logger.setVerboseness('GuildsManager', verbosity).setModuleColor('GuildsManager', 'blue');

@@ -1,22 +1,28 @@
-const CommandHelper = require('../core/CommandHelper.js');
 const Logger = require('../core/Logger.js');
 const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 
 class LeaveCommand extends PlayerCommand {
     constructor() {
         super('volume', {
-           aliases: ['volume'] 
+            aliases: ['volume', 'vol'],
+            args: [
+                {
+                    id: 'input',
+                    type: 'number',
+                    default: 1,
+                    match: 'rest',
+                },
+            ],
+            quoted: false,
+            channel: 'guild',
         });
     }
 
-    async playerExec(message) {
-        /* Try to get the volume from the command */
-        const input = CommandHelper.getCleared(this.id, message);
-
-        Logger.verbose('Commands', 1, '[Volume] Volume command receive. Value: "' + input + '"');
+    async childExec(message, args) {
+        Logger.verbose('Commands', 1, '[Volume] Volume command receive. Value: "' + args.input + '"');
 
         /* Multiply by one to parse to int/float or NaN */
-        let volume = input * 1
+        let volume = args.input;// * 1
 
         /* Check if the input could be parsed */
         if (isNaN(volume)) {

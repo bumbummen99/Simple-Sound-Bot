@@ -24,17 +24,6 @@ class AbstractCommand extends Command {
         }
     }
 
-    getCleared(message) {
-        const prefixes = Array.isArray(this.prefix) ? this.prefix : [this.prefix];
-        for (const prefix of prefixes) {
-            if (message.cleanContent.startsWith(prefix)) {
-                return 
-            }
-        }
-        Logger.verbose('CommandHelper', 2, 'Trying to clear command with prefix "' + process.env.DISCORD_BOT_COMMAND_PREFIX + '" and command "' + prefix + '".');
-        return message.cleanContent.replace(process.env.DISCORD_BOT_COMMAND_PREFIX + prefix, '').trim();
-    }
-
     childExec(message) {
         return message.reply('Not implemented :(');
     }
