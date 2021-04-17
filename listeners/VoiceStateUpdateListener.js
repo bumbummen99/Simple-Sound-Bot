@@ -25,7 +25,7 @@ class VoiceStateUpdateListener extends Listener {
     
                     /* Check if the Bot is the only one left in the channel */
                     if (audioClient.getVoiceChannel()) {
-                        if (audioClient.getVoiceChannel().members.size <= 1 && !GuildsManger.isPersistent(guildId)) {
+                        if (audioClient.getVoiceChannel().members.size <= 1) {
                             Logger.verbose('Bot', 2, 'Bot-Channel is empty.');
                             
                             if (!GuildsManger.isPersistent(guildId)) {

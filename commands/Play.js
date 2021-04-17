@@ -20,7 +20,7 @@ class PlayCommand extends PlayerCommand {
     }
 
     async childExec(message, args) {
-        Logger.verbose('Commands', 1, '[Play] Play command received. Input: "' + args.input + '"');
+        Logger.verbose('Commands', 1, `[Play] Play command received. Input: "${args.input}"`);
 
         const audioClient = this.getAudioClientForGuild(message.guild.id);
 
@@ -45,11 +45,11 @@ class PlayCommand extends PlayerCommand {
 
             /* Verify that we have the videoID and thereby a valid YouTube URL */
             if (!trackData) {
-                Logger.verbose('Commands', 1, '[Play] No results found for: "' + args.input + '"', 'yellow');
-                return message.util.reply('No results found for: "' + args.input + '"');
+                Logger.verbose('Commands', 1, `[Play] No results found for: "${args.input}"`, 'yellow');
+                return message.util.reply(`No results found for: "${args.input}"`);
             }
 
-            Logger.verbose('Commands', 1, '[Play] Trying to play "' + trackData.getName() + '" from path "' + trackData.getPath() + '"');
+            Logger.verbose('Commands', 1, `[Play] Trying to play "${trackData.getName()}" from path "${trackData.getPath()}"`);
             audioClient.play(trackData.getPath());
 
             return message.util.reply(trackData.getEmbed());

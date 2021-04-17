@@ -11,7 +11,12 @@ class PlayerCommand extends AbstractCommand {
         return GuildsManager.get(guildId);
     }
 
-    async getTrackData(input) {       
+    async getTrackData(input) {
+        /* Remove <> wrapper if exists */
+        if (input.startsWith('<') && input.endsWith('>')) {
+            input = input.slice(1, -1);
+        }
+
         /* Not an URL, try to search YouTube */
         if (!input.startsWith('http')) {
             /* Not an URL, search YouTube */
@@ -43,7 +48,7 @@ class PlayerCommand extends AbstractCommand {
         //TODO
 
         /* Check if URL is SoundCloud */
-        //TODO
+        //TODO    
 
         return null;
     }
