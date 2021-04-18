@@ -1,4 +1,5 @@
 const db = require('../../models/index.js');
+const Logger = require('../Services/Logger.js');
 
 class Queue {
     static async queue(guildId, clientId, path, name) {
