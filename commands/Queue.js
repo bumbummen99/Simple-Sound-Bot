@@ -39,8 +39,7 @@ class QueueCommand extends PlayerCommand {
             }
 
             Logger.getInstance().verbose('Commands', 1, '[Queue] Trying to play "' + trackData.getName() + '" from path "' + trackData.getPath() + '"');
-            Queue.queue(message.guild.id, message.member.id, trackData.getPath(), trackData.getName())
-            await audioClient.queue(trackData.getPath(), trackData.getName());
+            await Queue.queue(message.guild.id, message.member.id, trackData.getPath(), trackData.getName())
 
             message.util.reply('Added "' + trackData.getName() + '" to the queue.');
         }
