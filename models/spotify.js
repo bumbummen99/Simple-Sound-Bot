@@ -3,9 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Video extends Model {
-    freezeTableName= true;
-    
+  class Spotify extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -15,18 +13,16 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  Video.init({
-    name: DataTypes.STRING,
-    description: DataTypes.STRING,
-    uri: DataTypes.STRING,
-    thumbnail: DataTypes.STRING,
-    videoID: {
+  Spotify.init({
+    trackId: {
       type: DataTypes.STRING,
-      unique: true,            
-    }
+      primaryKey: true,
+    },
+    name: DataTypes.STRING,
+    thumbnail: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Video',
+    modelName: 'Spotify',
   });
-  return Video;
+  return Spotify;
 };

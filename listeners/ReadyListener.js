@@ -1,5 +1,5 @@
 const { Listener } = require('discord-akairo');
-const Logger = require('../core/Logger');
+const Logger = require('../core/Services/Logger');
 
 class VoiceStateUpdateListener extends Listener {
     constructor() {
@@ -10,7 +10,7 @@ class VoiceStateUpdateListener extends Listener {
     }
 
     exec(oldState, newState) {
-        Logger.verbose('Bot', 1, 'Bot is ready!');
+        Logger.getInstance().verbose('Bot', 1, 'Bot is ready!');
     }
 }
 

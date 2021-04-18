@@ -1,5 +1,5 @@
 const PlayerCommand = require('../core/Commands/PlayerCommand.js');
-const Logger = require('../core/Logger.js');
+const Logger = require('../core/Services/Logger.js');
 
 class LeaveCommand extends PlayerCommand {
     constructor() {
@@ -10,14 +10,14 @@ class LeaveCommand extends PlayerCommand {
     }
 
     async childExec(message) {
-        Logger.verbose('Commands', 1, '[Leave] Leave command received, leaving...');
+        Logger.getInstance().verbose('Commands', 1, '[Leave] Leave command received, leaving...');
         
         const audioClient = this.getAudioClientForGuild(message.guild.id);
 
         /* Disconnect the AudioClient */
         await audioClient.leave();
 
-        Logger.verbose('Commands', 1, '[Leave] Bot left the current channel.');
+        Logger.getInstance().verbose('Commands', 1, '[Leave] Bot left the current channel.');
 
         message.util.reply('Screw you guys i\'m going home!');
     }

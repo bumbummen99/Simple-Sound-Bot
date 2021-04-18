@@ -1,5 +1,5 @@
-const Logger = require('../core/Logger.js');
-const WikiPedia = require('../core/Wikipedia.js');
+const Logger = require('../core/Services/Logger.js');
+const WikiPedia = require('../core/Utils/Wikipedia.js');
 const AbstractCommand = require('../core/Commands/AbstractCommand.js');
 
 class WikiCommand extends AbstractCommand {
@@ -19,7 +19,7 @@ class WikiCommand extends AbstractCommand {
     }
 
     async childExec(message, args) {
-        Logger.verbose('Commands', 1, '[Wiki] Wiki command received. Input: "' + args.title + '"');
+        Logger.getInstance().verbose('Commands', 1, '[Wiki] Wiki command received. Input: "' + args.title + '"');
 
         /* Fetch the page */
         let pageData = null;

@@ -1,6 +1,6 @@
-const PollyTTS = require('../core/PollyTTS.js');
-const Logger = require('../core/Logger.js');
-const WikiPedia = require('../core/Wikipedia.js');
+const PollyTTS = require('../core/Utils/PollyTTS.js');
+const Logger = require('../core/Services/Logger.js');
+const WikiPedia = require('../core/Utils/Wikipedia.js');
 const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 
 class TTSWikiCommand extends PlayerCommand {
@@ -21,7 +21,7 @@ class TTSWikiCommand extends PlayerCommand {
     }
 
     async childExec(message, args) {
-        Logger.verbose('Commands', 1, '[TTSWiki] TTSWiki command received. Input: "' + args.title + '"');
+        Logger.getInstance().verbose('Commands', 1, '[TTSWiki] TTSWiki command received. Input: "' + args.title + '"');
 
         /* Get the WikiPedia page data */
         let pageData = null;
@@ -43,7 +43,7 @@ class TTSWikiCommand extends PlayerCommand {
         const audioClient = this.getAudioClientForGuild(message.guild.id);
 
         /* Play the generated audio file */
-        Logger.verbose('Commands', 1, '[TTSWiki] Playing input from: "' + audioFile + '"');
+        Logger.getInstance().verbose('Commands', 1, '[TTSWiki] Playing input from: "' + audioFile + '"');
         audioClient.playBetween(audioFile);
 
         /* Post an embed with the data */

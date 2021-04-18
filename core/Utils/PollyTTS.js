@@ -3,7 +3,7 @@ const md5 = require('md5');
 const fs = require('fs');
 const path = require('path');
 const Downloader = require('./Downloader');
-const Logger = require('./Logger');
+const Logger = require('../Services/Logger');
 
 class PollyTTS {
     static async generate(text) {
@@ -11,7 +11,7 @@ class PollyTTS {
 
         /* Generate and download the TTS audio if it does not already exist */
         if (!fs.existsSync(path)) {
-            Logger.verbose('PollyTTS', 1, 'Input is not cached, generating with AWS Polly...', 'blueBright');
+            Logger.getInstance().verbose('PollyTTS', 1, 'Input is not cached, generating with AWS Polly...', 'blueBright');
             await Downloader.get(await PollyTTS._generator(text), path);
         }
 

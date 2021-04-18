@@ -1,5 +1,5 @@
 const PlayerCommand = require('../core/Commands/PlayerCommand.js');
-const Logger = require('../core/Logger.js');
+const Logger = require('../core/Services/Logger.js');
 
 class PauseCommand extends PlayerCommand {
     constructor() {
@@ -10,7 +10,7 @@ class PauseCommand extends PlayerCommand {
     }
 
     async childExec(message) {
-        Logger.verbose('Commands', 1, '[Pause] Pause command received, pausing playback...');
+        Logger.getInstance().verbose('Commands', 1, '[Pause] Pause command received, pausing playback...');
 
         const audioClient = this.getAudioClientForGuild(message.guild.id);
 

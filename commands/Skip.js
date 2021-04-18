@@ -1,4 +1,4 @@
-const Logger = require('../core/Logger.js');
+const Logger = require('../core/Services/Logger.js');
 const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 
 class SkipCommand extends PlayerCommand {
@@ -10,7 +10,7 @@ class SkipCommand extends PlayerCommand {
     }
 
     async childExec(message) {
-        Logger.verbose('Commands', 1, '[Skip] Skip command received, Skip playback...');
+        Logger.getInstance().verbose('Commands', 1, '[Skip] Skip command received, Skip playback...');
 
         const audioClient = this.getAudioClientForGuild(message.guild.id);
 

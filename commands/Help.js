@@ -1,5 +1,5 @@
 const AbstractCommand = require('../core/Commands/AbstractCommand.js');
-const Logger = require('../core/Logger.js');
+const Logger = require('../core/Services/Logger.js');
 
 class HelpCommand extends AbstractCommand {
     constructor() {
@@ -9,7 +9,7 @@ class HelpCommand extends AbstractCommand {
     }
 
     async childExec(message) {
-        Logger.verbose('Commands', 1, '[Commands] Commands command received, giving some info...');
+        Logger.getInstance().verbose('Commands', 1, '[Commands] Commands command received, giving some info...');
 
         const prefix = process.env.DISCORD_BOT_COMMAND_PREFIX;
 

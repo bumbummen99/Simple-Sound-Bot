@@ -1,16 +1,16 @@
 const { Command } = require('discord-akairo');
-const Logger = require('../Logger');
+const Logger = require('../Services/Logger');
 
 class AbstractCommand extends Command {
     async exec(message, args) {
         let allow = true;
         if (process.env.DISCORD_BOT_COMMAND_Channel.length) {
-            Logger.verbose('Commands', 1, '[AbstractCommand] Command channels restricted, testing for "' + process.env.DISCORD_BOT_COMMAND_Channel.split(',').join(', ') + '".');
+            Logger.getInstance().verbose('Commands', 1, '[AbstractCommand] Command channels restricted, testing for "' + process.env.DISCORD_BOT_COMMAND_Channel.split(',').join(', ') + '".');
             allow = false;
             for (let cid of process.env.DISCORD_BOT_COMMAND_Channel.split(',')) {
                 if (message.channel.id === cid) {
                     allow = true;
-                    Logger.verbose('Commands', 1, '[AbstractCommand] Posted in configured channel, proceeding...');
+                    Logger.getInstance().verbose('Commands', 1, '[AbstractCommand] Posted in configured channel, proceeding...');
                     break;
                 }
             }
@@ -19,7 +19,7 @@ class AbstractCommand extends Command {
         if (allow || this.isAllowed()) {
             return this.childExec(message, args);
         } else {
-            Logger.verbose('Commands', 1, '[AbstractCommand] Posted in not allowed channel, cancelling!');
+            Logger.getInstance().verbose('Commands', 1, '[AbstractCommand] Posted in not allowed channel, cancelling!');
             return message.reply('You can\'t do that here.');
         }
     }

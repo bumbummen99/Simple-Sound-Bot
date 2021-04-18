@@ -1,15 +1,16 @@
 const String = require('../Helpers/String');
-const Logger = require('../Logger');
+const Logger = require('../Services/Logger');
 
 class TrackData {
-    constructor(path, url, name, description = null, thumbnail = null) {
+    constructor(type, path, url, name, description = null, thumbnail = null) {
+        this._type = type;
         this._path = path;
         this._url = url;
         this._name = name;
         this._description = description;
         this._thumbnail = thumbnail;
         
-        Logger.verbose('TrackData', 4, `TrackData created with URL: "${url}", Name: "${name}", Desc: "${String.excerpt(this._description ?? '', 20)}", Image: "${thumbnail}"`)
+        Logger.getInstance().verbose('TrackData', 4, `TrackData created with URL: "${url}", Name: "${name}", Desc: "${String.excerpt(this._description ?? '', 20)}", Image: "${thumbnail}"`)
     }
 
     getPath() {

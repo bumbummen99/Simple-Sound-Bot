@@ -10,7 +10,7 @@ class Queue {
             name: name,
         });
 
-        Logger.verbose('AudioClient', 1, `Added URI "${path}" with name "${name}" to the Queue.`);
+        Logger.getInstance().verbose('AudioClient', 1, `Added URI "${path}" with name "${name}" to the Queue.`);
     }
 
     static async clearQueue(guildId) {
@@ -22,7 +22,7 @@ class Queue {
             truncate: true
         });
 
-        Logger.verbose('AudioClient', 1, `Cleared the whole Queue for guild ${guildId}.`);
+        Logger.getInstance().verbose('AudioClient', 1, `Cleared the whole Queue for guild ${guildId}.`);
     }
 
     static async queueSize(guildId) {
@@ -48,7 +48,7 @@ class Queue {
             }
         });  
 
-        Logger.verbose('AudioClient', 1, 'Removed entry from Queue}.');
+        Logger.getInstance().verbose('AudioClient', 1, 'Removed entry from Queue}.');
     }
 }
 

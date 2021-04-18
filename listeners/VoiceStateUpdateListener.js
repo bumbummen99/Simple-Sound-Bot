@@ -1,8 +1,8 @@
 const { Listener } = require('discord-akairo');
 const AudioClient = require('../core/AudioClient/AudioClient');
 const GuildsManger = require('../core/AudioClient/GuildsManger');
-const Logger = require('../core/Logger');
-const PollyTTS = require('../core/PollyTTS');
+const Logger = require('../core/Services/Logger');
+const PollyTTS = require('../core/Utils/PollyTTS');
 
 class VoiceStateUpdateListener extends Listener {
     constructor() {
@@ -26,13 +26,13 @@ class VoiceStateUpdateListener extends Listener {
                     /* Check if the Bot is the only one left in the channel */
                     if (audioClient.getVoiceChannel()) {
                         if (audioClient.getVoiceChannel().members.size <= 1) {
-                            Logger.verbose('Bot', 2, 'Bot-Channel is empty.');
+                            Logger.getInstance().verbose('Bot', 2, 'Bot-Channel is empty.');
                             
                             if (!GuildsManger.isPersistent(guildId)) {
                                 GuildsManger.startTimeout(guildId);
                             }
                         } else {
-                            Logger.verbose('Bot', 2, 'Bot-Channel not empty.');
+                            Logger.getInstance().verbose('Bot', 2, 'Bot-Channel not empty.');
         
                             GuildsManger.stopTimeout(guildId);
                         } 
@@ -45,21 +45,21 @@ class VoiceStateUpdateListener extends Listener {
         if (!this._detectSelf([oldState, newState])) {
             /* Detec it user connected to channel */
             if (oldState.channel === null) {
-                Logger.verbose('Bot', 2, 'User "' + newState.member.displayName + '" connected to channel ' + newState.channel.id + '.');
+                Logger.getInstance().verbose('Bot', 2, 'User "' + newState.member.displayName + '" connected to channel ' + newState.channel.id + '.');
                 
                 this._connected(newState);
             } 
             
             /* Detect if user disconnected from channel */
             else if (newState.channel === null) {
-                Logger.verbose('Bot', 2, 'User "' + oldState.member.displayName + '" disconnected from channel ' + oldState.channel.id + '.');
+                Logger.getInstance().verbose('Bot', 2, 'User "' + oldState.member.displayName + '" disconnected from channel ' + oldState.channel.id + '.');
 
                 this._disconnected(oldState);
             }
             
             /* Detect if user moved between channels */
             else if (oldState.channel !== null && newState.channel !== null && oldState.channel.id !== newState.channel.id) {
-                Logger.verbose('Bot', 2, 'User "' + oldState.member.displayName + '" moved to channel ' + newState.channel.id + ' from ' + oldState.channel.id + '.');
+                Logger.getInstance().verbose('Bot', 2, 'User "' + oldState.member.displayName + '" moved to channel ' + newState.channel.id + ' from ' + oldState.channel.id + '.');
 
                 this._movedChannel(oldState, newState);
             }

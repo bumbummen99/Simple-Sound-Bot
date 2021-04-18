@@ -4,10 +4,29 @@ const fs = require('fs')
 const path = require('path');
 const urlStatusCode = require('url-status-code')
 
-const db = require('../models/index.js');
-const Logger = require('./Logger.js');
+const db = require('../../../models/index.js');
+const Logger = require('../../Services/Logger.js');
+const YouTubeDL = require('./Abstracts/YouTubeDL.js');
+const ytsr = require('ytsr');
 
-class YouTube {
+class YouTube extends YouTubeDL {
+
+    static async search(input) {
+        /* Not an URL, search YouTube */
+        const results = await ytsr(input, {
+            limit: 1,
+            gl: process.env.YOUTUBE_COUNTRY ?? 'US',
+            hl: process.env.YOUTUBE_LANGUAGE ?? 'en',
+        });
+
+        /* Return nothing if we found nothing */
+        if (!results.items.length) {
+            return null;
+        }
+
+        return results.items[0].url;
+    }
+
     static getIdFromURL(url) {
         if (url != undefined || url != '') {
             /* Try to get the ID from the YouTube URL */
@@ -21,18 +40,18 @@ class YouTube {
         return null;
     }
 
-    static async download(url, cachePath) {
+    static async download(url) {
         const id = YouTube.getIdFromURL(url);
 
         /* Try to find the video information */
-        let video = await db.Video.findOne({
+        let video = await db.YouTube.findOne({
             where: {
-                videoID: id,
+                videoId: id,
             }
         });
 
         if (!video) {
-            Logger.verbose('Commands', 1, '[YouTube] Video "' + id + '" not in database, retrieving information...', 'blueBright');
+            Logger.getInstance().verbose('YouTubeDL', 1, '[YouTube] Video "' + id + '" not in database, retrieving information...', 'blueBright');
 
             /* Fetch the video info with youtube dl */
             const info = await ytdl.getInfo(url);
@@ -44,39 +63,22 @@ class YouTube {
             }
 
             /* Create the model in the database */
-            video = await db.Video.create({
+            video = await db.YouTube.create({
+                videoId: id,
                 name: info.videoDetails.title,
                 description: info.videoDetails.description,
-                uri: url,
                 thumbnail: thumbnail,
-                videoID: id,
             });
         } else {
-            Logger.verbose('Commands', 1, '[YouTube] Video "' + id + '" found in database!', 'blueBright');
+            Logger.getInstance().verbose('YouTubeDL', 1, '[YouTube] Video "' + id + '" found in database!', 'blueBright');
         }
 
         if (!fs.existsSync(YouTube.getCachePath(id))) {
-            Logger.verbose('Commands', 1, '[YouTube] Video "' + id + '" is not cached. Downloading...', 'blueBright');
+            Logger.getInstance().verbose('YouTubeDL', 1, '[YouTube] Video "' + id + '" is not cached. Downloading...', 'blueBright');
             await YouTube.ytdlPromised(url, YouTube.getCachePath(id));
         }
 
         return video;
-    }
-
-    static ytdlPromised(url, path) {
-        return new Promise((resolve, reject) => {
-            const stream = ytdl(url, { quality: 'highestaudio' });
-            stream.pipe(fs.createWriteStream(path));
-            stream.on('finish', () => {
-                resolve()
-            });
-            stream.on('error', e => {
-                Logger.verbose('Commands', 1, '[YouTube] YouTubeDL failed, exception: "' + e + '"', 'red');
-
-                reject(e)
-            })
-        });
-        
     }
 
     static getCachePath(id) {

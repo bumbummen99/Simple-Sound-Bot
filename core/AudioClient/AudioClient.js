@@ -1,4 +1,4 @@
-const Logger = require('../Logger.js');
+const Logger = require('../Services/Logger.js');
 const StreamDispatcherWrapper = require('./StreamDispatcherWrapper.js');
 const StreamDispatcherManager = require('./StreamDispatcherManager.js');
 const Queue = require('../Player/Queue.js');
@@ -31,7 +31,7 @@ class AudioClient {
         /* Set the speaking state to false initially (as nothing is playing yet) */
         this.connection.setSpeaking(0);
 
-        Logger.verbose('AudioClient', 1, 'Successfully connected to channel "' + channel.name + '"');
+        Logger.getInstance().verbose('AudioClient', 1, 'Successfully connected to channel "' + channel.name + '"');
     }
 
     leave() {
@@ -49,15 +49,15 @@ class AudioClient {
             this.connection.disconnect();
             this.connection = null;            
 
-            Logger.verbose('AudioClient', 1, `Diconnected the AudioClient from channel "${name}".`);
+            Logger.getInstance().verbose('AudioClient', 1, `Diconnected the AudioClient from channel "${name}".`);
         } else {
-            Logger.verbose('AudioClient', 1, 'No need to disconnect, we are not connected :)');
+            Logger.getInstance().verbose('AudioClient', 1, 'No need to disconnect, we are not connected :)');
         }
     }
 
     async next(uri) {
         if (this._repeat) {
-            Logger.verbose('AudioClient', 1, 'Repeating current track.');
+            Logger.getInstance().verbose('AudioClient', 1, 'Repeating current track.');
 
             return this.play(uri);
         }
@@ -72,8 +72,8 @@ class AudioClient {
         
         /* Set and play the item if there is any */
         if (entry) {
-            Logger.verbose('AudioClient', 4, `Found entry: ${JSON.stringify(entry)}, Type: ${typeof entry}`);
-            Logger.verbose('AudioClient', 1, `Trying to play queued entry ${entry.id} with path ${entry.path} for guild ${this._guildId}`);
+            Logger.getInstance().verbose('AudioClient', 4, `Found entry: ${JSON.stringify(entry)}, Type: ${typeof entry}`);
+            Logger.getInstance().verbose('AudioClient', 1, `Trying to play queued entry ${entry.id} with path ${entry.path} for guild ${this._guildId}`);
             this._queueID = entry.id;
             this.play(entry.path);
         }
@@ -83,21 +83,21 @@ class AudioClient {
         if (this.isConnected()) {
             let resume = null;
             if (this.hasDispatcher() && !this.getDispatcher().isFinished() && !this.getDispatcher().isPaused()) {
-                Logger.verbose('AudioClient', 1, 'PlayBetween detected previous dispatcher, pausing...');
+                Logger.getInstance().verbose('AudioClient', 1, 'PlayBetween detected previous dispatcher, pausing...');
 
                 this.pause();
 
                 resume = this.getDispatcherData();
             }
 
-            Logger.verbose('AudioClient', 1, 'Playing between...');
+            Logger.getInstance().verbose('AudioClient', 1, 'Playing between...');
             this.play(uri, false);
 
             this.getDispatcher().on('finish', () => {
-                Logger.verbose('AudioClient', 1, 'PlayBetween finished!');
+                Logger.getInstance().verbose('AudioClient', 1, 'PlayBetween finished!');
 
                 if (resume) {
-                    Logger.verbose('AudioClient', 1, `Resuming previous dispatcher at time "${resume.time}"...`);
+                    Logger.getInstance().verbose('AudioClient', 1, `Resuming previous dispatcher at time "${resume.time}"...`);
                     this.play(resume.uri, resume.playBetween, resume.time, resume.dispatcher, resume.id);
                 }
             }); 
@@ -106,7 +106,7 @@ class AudioClient {
 
     play(uri, next = true, time = 0, wrapper = null, identifier = null) {
         if (this.isConnected()) {
-            Logger.verbose('AudioClient', 1, `Trying to play "${uri}"...`);
+            Logger.getInstance().verbose('AudioClient', 1, `Trying to play "${uri}"...`);
 
             /* Try to play the privded URI and get the dispatcher */
             const dispatcher = this.connection.play(uri, {
@@ -154,9 +154,9 @@ class AudioClient {
 
             this.getDispatcherData().time += this.getDispatcher().getTotalStreamTime();
 
-            Logger.verbose('AudioClient', 1, `Paused the current dispatcher at ${this.getDispatcherData().time}ms.`);
+            Logger.getInstance().verbose('AudioClient', 1, `Paused the current dispatcher at ${this.getDispatcherData().time}ms.`);
         } else {
-            Logger.verbose('AudioClient', 1, 'There is no dispatcher to pause.');
+            Logger.getInstance().verbose('AudioClient', 1, 'There is no dispatcher to pause.');
         }
     }
 
@@ -169,19 +169,19 @@ class AudioClient {
             /* Set speaking state */
             this.connection.setSpeaking(1);
 
-            Logger.verbose('AudioClient', 1, 'Successfully resumed the dispatcher.');
+            Logger.getInstance().verbose('AudioClient', 1, 'Successfully resumed the dispatcher.');
         } else {
-            Logger.verbose('AudioClient', 1, 'There is nothing to resume.');
+            Logger.getInstance().verbose('AudioClient', 1, 'There is nothing to resume.');
         }
     }
 
     skip() {
-        Logger.verbose('Commands', 1, '[AudioClient] Skipping current track.');
+        Logger.getInstance().verbose('Commands', 1, '[AudioClient] Skipping current track.');
         if (this.hasDispatcher()) {
-            Logger.verbose('AudioClient', 1, 'Stopping current dispatcher...');
+            Logger.getInstance().verbose('AudioClient', 1, 'Stopping current dispatcher...');
             this.getDispatcher().skip();
         } else {
-            Logger.verbose('AudioClient', 1, 'There is no dispatcher to stop/finish.');
+            Logger.getInstance().verbose('AudioClient', 1, 'There is no dispatcher to stop/finish.');
         }
     }
 
@@ -194,9 +194,9 @@ class AudioClient {
             /* Set speaking state */
             this.connection.setSpeaking(0);
 
-            Logger.verbose('AudioClient', 1, 'Stopping current dispatcher...');
+            Logger.getInstance().verbose('AudioClient', 1, 'Stopping current dispatcher...');
         } else {
-            Logger.verbose('AudioClient', 1, 'There is no dispatcher to stop/finish.');
+            Logger.getInstance().verbose('AudioClient', 1, 'There is no dispatcher to stop/finish.');
         }
     }
 
@@ -207,9 +207,9 @@ class AudioClient {
         /* Apply the setting if there is a dispatcher */
         if (this.hasDispatcher()) {
             this.getDispatcher().setVolume(volume);
-            Logger.verbose('AudioClient', 1, `Successfully set the volume to: '${volume}'.`);
+            Logger.getInstance().verbose('AudioClient', 1, `Successfully set the volume to: '${volume}'.`);
         } else {
-            Logger.verbose('AudioClient', 1, 'There is no dispatcher to set the volume on.');
+            Logger.getInstance().verbose('AudioClient', 1, 'There is no dispatcher to set the volume on.');
         }
     }
 

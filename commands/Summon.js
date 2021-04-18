@@ -1,5 +1,5 @@
-const PollyTTS = require('../core/PollyTTS.js');
-const Logger = require('../core/Logger.js');
+const PollyTTS = require('../core/Utils/PollyTTS.js');
+const Logger = require('../core/Services/Logger.js');
 const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 
 class SummonCommand extends PlayerCommand {
@@ -11,7 +11,7 @@ class SummonCommand extends PlayerCommand {
     }
 
     async childExec(message) {
-        Logger.verbose('Commands', 1, '[Summon] Summon command received.');
+        Logger.getInstance().verbose('Commands', 1, '[Summon] Summon command received.');
 
         /* Check if the author is in a voice channel */
         if (!message.member.voice.channel) {
@@ -28,7 +28,7 @@ class SummonCommand extends PlayerCommand {
             audioClient.playBetween(await PollyTTS.generate(process.env.GREET_TEMPLATE));
         }, 500);
         
-        Logger.verbose('Commands', 1, '[Summon] Summoned the bot.');
+        Logger.getInstance().verbose('Commands', 1, '[Summon] Summoned the bot.');
     }
 }
 

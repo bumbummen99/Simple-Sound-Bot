@@ -4,10 +4,12 @@ const path = require('path');
 const { exit } = require('process');
 
 const packageJSON = require('./package.json');
-const Logger = require('./core/Logger.js');
+const Logger = require('./core/Services/Logger.js');
 const Bot = require('./Bot.js');
-const WikiPedia = require('./core/Wikipedia');
+const WikiPedia = require('./core/Utils/Wikipedia');
 const GuildsManger = require('./core/AudioClient/GuildsManger');
+const SpotifyWebAPI = require('./core/Services/SpotifyWebAPI');
+const ServiceBooter = require('./core/ServiceBooter');
 
 /* Wrap in async self executing anonymous arrow function so we can await */
 (async () => {
@@ -44,44 +46,50 @@ const GuildsManger = require('./core/AudioClient/GuildsManger');
 
     /* Load the configuration */
     const envPath = args['--env'] ?? path.resolve(process.cwd() + '/.env');
-    Logger.verbose('Bootstrap', 1, 'Loading .env from "' + envPath + '"...');
     dotenv.config({
         path: envPath,
     });
 
+    /* Boot the ServiceContainer */
+    ServiceBooter();
+
     /* Configure Logger */
     const verbosity = args['--verbose'] ?? 0;
-    Logger.setVerboseness('Bootstrap', verbosity).setModuleColor('Bootstrap', 'greenBright');
-    Logger.setVerboseness('Bot', verbosity).setModuleColor('Bot', 'greenBright');
-    Logger.setVerboseness('Commands', verbosity).setModuleColor('Commands', 'green');
-    Logger.setVerboseness('Player', verbosity).setModuleColor('Player', 'blue');
-    Logger.setVerboseness('AudioClient', verbosity).setModuleColor('AudioClient', 'blue');
-    Logger.setVerboseness('GuildsManager', verbosity).setModuleColor('GuildsManager', 'blue');
-    Logger.setVerboseness('YouTube', verbosity).setModuleColor('YouTube', 'blue');
-    Logger.setVerboseness('TrackData', verbosity).setModuleColor('TrackData', 'grey');
-    Logger.verbose('Bootstrap', 1, 'Set verosity to "' + verbosity + '"');
+    Logger.getInstance().verbose('Bootstrap', 1, `Loaded .env from "${envPath}"...`);
+    Logger.getInstance().setVerboseness('Bootstrap', verbosity).setModuleColor('Bootstrap', 'greenBright');
+    Logger.getInstance().setVerboseness('Bot', verbosity).setModuleColor('Bot', 'greenBright');
+    Logger.getInstance().setVerboseness('Commands', verbosity).setModuleColor('Commands', 'green');
+    Logger.getInstance().setVerboseness('Player', verbosity).setModuleColor('Player', 'blue');
+    Logger.getInstance().setVerboseness('AudioClient', verbosity).setModuleColor('AudioClient', 'blue');
+    Logger.getInstance().setVerboseness('GuildsManager', verbosity).setModuleColor('GuildsManager', 'blue');
+    Logger.getInstance().setVerboseness('YouTubeDL', verbosity).setModuleColor('YouTube', 'blue');
+    Logger.getInstance().setVerboseness('TrackData', verbosity).setModuleColor('TrackData', 'grey');
+    Logger.getInstance().verbose('Bootstrap', 1, 'Set verosity to "' + verbosity + '"');
 
     /* Configure Wikipedia */
     await WikiPedia.setLanguage(process.env.WIKIPEDIA_LANGUAGE ?? 'en');
 
+    /* Configure Spotify */
+    await SpotifyWebAPI.getInstance().auth();
+
     /* Initialize the Bot */
-    Logger.verbose('Bootstrap', 1, 'Initializing the Bot...');
+    Logger.getInstance().verbose('Bootstrap', 1, 'Initializing the Bot...');
     const client = new Bot();
 
     /* Register stop listeners to shutdown gracefully */
     const shutdown = () => {
-        Logger.verbose('Bootstrap', 1, 'Received termination signal, shutting down gracefully...');
+        Logger.getInstance().verbose('Bootstrap', 1, 'Received termination signal, shutting down gracefully...');
 
         GuildsManger.destroy();
         client.destroy();
 
-        Logger.verbose('Bootstrap', 1, 'Shutdown complete! Bye :)');
+        Logger.getInstance().verbose('Bootstrap', 1, 'Shutdown complete! Bye :)');
         exit(0);
     };
     process.on('SIGTERM', shutdown);
     process.on('SIGINT', shutdown);
 
-    Logger.verbose('Bootstrap', 1, 'Starting the Bot...');
+    Logger.getInstance().verbose('Bootstrap', 1, 'Starting the Bot...');
 
     /* Login with the provided DISCORD_BOT_TOKEN */
     client.login(process.env.DISCORD_BOT_TOKEN);

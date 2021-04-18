@@ -1,5 +1,5 @@
-const PollyTTS = require('../core/PollyTTS.js');
-const Logger = require('../core/Logger.js');
+const PollyTTS = require('../core/Utils/PollyTTS.js');
+const Logger = require('../core/Services/Logger.js');
 const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 
 class TTSCommand extends PlayerCommand {
@@ -20,7 +20,7 @@ class TTSCommand extends PlayerCommand {
     }
 
     async childExec(message, args) {
-        Logger.verbose('Commands', 1, '[TTS] TTS command received. Input: "' + args.text + '"');
+        Logger.getInstance().verbose('Commands', 1, '[TTS] TTS command received. Input: "' + args.text + '"');
 
         /* Generate or load the cached audio */
         const audioFile = await PollyTTS.generate(args.text);
@@ -28,7 +28,7 @@ class TTSCommand extends PlayerCommand {
         const audioClient = this.getAudioClientForGuild(message.guild.id);
 
         /* Play the generated audio file */
-        Logger.verbose('Commands', 1, '[TTS] Playing input from: "' + audioFile + '"');
+        Logger.getInstance().verbose('Commands', 1, '[TTS] Playing input from: "' + audioFile + '"');
         audioClient.playBetween(audioFile);
 
         message.util.reply('Doing as you demand...');

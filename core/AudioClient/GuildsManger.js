@@ -1,4 +1,4 @@
-const Logger = require("../Logger");
+const Logger = require("../Services/Logger");
 const AudioClient = require("./AudioClient");
 
 class GuildsManager {
@@ -18,7 +18,7 @@ class GuildsManager {
         if (!this._audioClients.has(guildId)) {
             this._audioClients.set(guildId, new AudioClient(guildId));
 
-            Logger.verbose('GuildsManager', 1, `Created new AudioClient for guild ${guildId}.`);
+            Logger.getInstance().verbose('GuildsManager', 1, `Created new AudioClient for guild ${guildId}.`);
         }
 
         return this._audioClients.get(guildId);
@@ -32,7 +32,7 @@ class GuildsManager {
 
         this._audioClients.delete(guildId);
 
-        Logger.verbose('GuildsManager', 1, `Removed AudioClient for guild ${guildId}.`);
+        Logger.getInstance().verbose('GuildsManager', 1, `Removed AudioClient for guild ${guildId}.`);
     }
 
     togglePersistance(guildId, newState = !this.isPersistent(guildId)) {
@@ -55,7 +55,7 @@ class GuildsManager {
             }
         }
 
-        Logger.verbose('GuildsManager', 1, `${newState ? 'Enabled' : 'Disabled'} AudioClient persistance for guild ${guildId}.`);
+        Logger.getInstance().verbose('GuildsManager', 1, `${newState ? 'Enabled' : 'Disabled'} AudioClient persistance for guild ${guildId}.`);
 
         return newState;
     }
@@ -70,9 +70,9 @@ class GuildsManager {
                 this.remove(guildId);
             }, 5 * 60 * 1000));
 
-            Logger.verbose('GuildsManager', 1, `Started AudioClient leave timeout for guild ${guildId}.`);
+            Logger.getInstance().verbose('GuildsManager', 1, `Started AudioClient leave timeout for guild ${guildId}.`);
         } else {
-            Logger.verbose('GuildsManager', 3, `Cant start leave timeout, no AudioClient for guild ${guildId}.`);
+            Logger.getInstance().verbose('GuildsManager', 3, `Cant start leave timeout, no AudioClient for guild ${guildId}.`);
         }
     }
 
@@ -82,9 +82,9 @@ class GuildsManager {
 
             this._leaveTimeouts.delete(guildId);
 
-            Logger.verbose('GuildsManager', 1, `Stopped AudioClient leave timeout for guild ${guildId}.`);
+            Logger.getInstance().verbose('GuildsManager', 1, `Stopped AudioClient leave timeout for guild ${guildId}.`);
         } else {
-            Logger.verbose('GuildsManager', 3, `Cant stop leave timeout, no timeout for guild ${guildId}.`);
+            Logger.getInstance().verbose('GuildsManager', 3, `Cant stop leave timeout, no timeout for guild ${guildId}.`);
         }
     }
 
@@ -98,7 +98,7 @@ class GuildsManager {
             this._audioClients.delete(guildId);
         }
 
-        Logger.verbose('GuildsManager', 1, `Closed all AudioClients.`);
+        Logger.getInstance().verbose('GuildsManager', 1, `Closed all AudioClients.`);
     }
 }
 
