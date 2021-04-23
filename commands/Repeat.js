@@ -3,7 +3,7 @@ const PlayerCommand = require('../core/Commands/PlayerCommand.js');
 class RepeatCommand extends PlayerCommand {
     constructor() {
         super('repeat', {
-            aliases: ['repeat'],
+            aliases: ['repeat', 'loop'],
             channel: 'guild',
         });
     }

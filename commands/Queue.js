@@ -22,8 +22,6 @@ class QueueCommand extends PlayerCommand {
     async childExec(message, args) {
         Logger.getInstance().verbose('Commands', 1, '[Queue] Queue command received. Input: "' + args.input + '"');
 
-        const audioClient = this.getAudioClientForGuild(message.guild.id);
-
         /* If no URL has been supplied we have to check if the AudioClient is paused and can be resumed */
         if (!args.input.length) {
             Logger.getInstance().verbose('Commands', 1, '[Play] No input provided :(');
