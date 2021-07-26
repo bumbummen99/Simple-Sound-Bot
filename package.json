@@ -30,7 +30,7 @@
     "uniqid": "^5.3.0",
     "url-status-code": "^2.0.0",
     "wikipedia": "^1.0.5",
-    "ytdl-core": "^4.5.0",
+    "ytdl-core": "^4.9.0",
     "ytsr": "^3.4.0"
   },
   "devDependencies": {
