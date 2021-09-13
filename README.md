@@ -49,7 +49,7 @@ Simple-Spound-Bot provides an automatically generated docker image that you can 
 ### Docker CLI
 To use it with plain `docker` commands, simply install Docker for your operating system of choice and run the following command. Make sure to pass your environmenr variables!
 ```
-docker run -v ~/.aws:/root/.aws -v ./cache:/root/simple-sound-bot/cache -e CMD_ARGUMENTS=-vvvv skyrpator/simple-sound-bot:latest
+docker run -v ~/.aws:/root/.aws -v ./cache:/root/simple-sound-bot/cache -e CMD_ARGUMENTS=-vvvv skyraptor/simple-sound-bot:latest
 ```
 ### Docker Compose
 You can also use the provided compose file by using this command. This will automatically load the .env into the containers Environment.
