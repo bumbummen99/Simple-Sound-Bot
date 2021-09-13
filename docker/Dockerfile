@@ -14,7 +14,7 @@ WORKDIR /root/simple-sound-bot/
 RUN npm install
 
 # Add YouTubeDL update to CRON
-COPY /root/simple-sound-bot/installYouTubeDL.sh /etc/periodic/15min/installYouTubeDL
+COPY installYouTubeDL.sh /etc/periodic/15min/installYouTubeDL
 
 # Allow for overriding the CMD_ARGUMENTS
 ENV CMD_ARGUMENTS ""
