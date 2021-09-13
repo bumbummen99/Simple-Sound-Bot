@@ -5,7 +5,7 @@ FROM node:lts-alpine
 RUN apk update && apk upgrade && apk add --no-cache bash git openssh ffmpeg
 
 # Add the source
-ADD . /root/simple-sound-bot/
+ADD ../ /root/simple-sound-bot/
 
 # Set the workdir to the simple-sound-bot folder
 WORKDIR /root/simple-sound-bot/
