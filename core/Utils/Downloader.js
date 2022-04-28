@@ -6,11 +6,15 @@ class Downloader {
     static get(URI, dest) {
         return new Promise((resolve, reject) => {
             let handler = URI.startsWith('https') ? https : http;
+
+            const file = fs.createWriteStream(dest);
             try {
                 handler.get(URI, (response) => {
-                    response.pipe(fs.createWriteStream(dest));
-    
-                    resolve();
+                    response.pipe(file);
+                    file.once('finish', () => {
+                        file.close();
+                        resolve();
+                    });
                 });
             } catch (e) {
                 reject(e);

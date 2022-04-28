@@ -1,7 +1,9 @@
 version: "3.8"
 services:
   simple-sound-bot:
-    build: .
+    build:
+        context: ./docker
+        dockerfile: Dockerfile
     volumes:
       - ./cache:/root/simple-sound-bot/cache
       - ~/.aws:/root/.aws

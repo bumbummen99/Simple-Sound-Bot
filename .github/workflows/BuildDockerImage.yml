@@ -28,6 +28,7 @@ jobs:
         with:
           push: true
           tags: skyraptor/simple-sound-bot:latest
+          file: docker/Dockerfile
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}

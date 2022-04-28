@@ -5,7 +5,7 @@ FROM node:lts-alpine
 RUN apk update && apk upgrade && apk add --no-cache bash git openssh ffmpeg
 
 # Add the source
-ADD . /root/simple-sound-bot/
+ADD ../ /root/simple-sound-bot/
 
 # Set the workdir to the simple-sound-bot folder
 WORKDIR /root/simple-sound-bot/
@@ -13,8 +13,11 @@ WORKDIR /root/simple-sound-bot/
 # Install dependencies (if not installed)
 RUN npm install
 
+# Add YouTubeDL update to CRON
+COPY installYouTubeDL.sh /etc/periodic/15min/installYouTubeDL
+
 # Allow for overriding the CMD_ARGUMENTS
 ENV CMD_ARGUMENTS ""
 
-# Start the bot
-CMD [ "sh", "-c", "npx sequelize db:migrate && npm run start -- ${CMD_ARGUMENTS}" ]
+# Start the bot by first installing/updating YouTubeDL, migrating the Database and starting the bot
+CMD [ "sh", "-c", "/root/simple-sound-bot/installYouTubeDL.sh && npx sequelize db:migrate && npm run start -- ${CMD_ARGUMENTS}" ]

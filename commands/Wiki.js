@@ -38,6 +38,10 @@ class WikiCommand extends AbstractCommand {
         /* Post an embed with the data */
         return message.util.reply(WikiPedia.generateEmbed(pageData));
     }
+    
+    isAllowed() {
+        return true;
+    }
 }
 
 module.exports = WikiCommand;
