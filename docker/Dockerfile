@@ -13,9 +13,6 @@ WORKDIR /root/simple-sound-bot/
 # Install dependencies (if not installed)
 RUN npm install
 
-# Add YouTubeDL update to CRON
-COPY installYouTubeDL.sh /etc/periodic/15min/installYouTubeDL
-
 # Allow for overriding the CMD_ARGUMENTS
 ENV CMD_ARGUMENTS ""
 
