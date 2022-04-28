@@ -24,7 +24,6 @@
     "fluent-ffmpeg": "^2.1.2",
     "md5": "^2.3.0",
     "sequelize": "^6.19.0",
-    "spotify-web-api-node": "^5.0.2",
     "sqlite": "^4.1.1",
     "sqlite3": "^5.0.6",
     "uniqid": "^5.4.0",

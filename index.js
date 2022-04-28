@@ -8,7 +8,6 @@ const Logger = require('./core/Services/Logger.js');
 const Bot = require('./Bot.js');
 const WikiPedia = require('./core/Utils/Wikipedia');
 const GuildsManger = require('./core/AudioClient/GuildsManger');
-const SpotifyWebAPI = require('./core/Services/SpotifyWebAPI');
 const ServiceBooter = require('./core/ServiceBooter');
 
 /* Wrap in async self executing anonymous arrow function so we can await */
@@ -68,9 +67,6 @@ const ServiceBooter = require('./core/ServiceBooter');
 
     /* Configure Wikipedia */
     await WikiPedia.setLanguage(process.env.WIKIPEDIA_LANGUAGE ?? 'en');
-
-    /* Configure Spotify */
-    await SpotifyWebAPI.getInstance().auth();
 
     /* Initialize the Bot */
     Logger.getInstance().verbose('Bootstrap', 1, 'Initializing the Bot...');

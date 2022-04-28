@@ -1,7 +1,6 @@
 const AbstractCommand = require("./AbstractCommand");
 const GuildsManager = require("../AudioClient/GuildsManger");
 const TrackData = require("../Player/TrackData");
-const Spotify = require("../Utils/YouTubeDL/Spotify");
 const YouTube = require("../Utils/YouTubeDL/YouTube");
 
 class PlayerCommand extends AbstractCommand {
@@ -27,11 +26,6 @@ class PlayerCommand extends AbstractCommand {
             const video = await YouTube.download(input);
             return new TrackData('youtube', YouTube.getCachePath(YouTube.getIdFromURL(input)), `https://www.youtube.com/watch?v=${video.videoId}`, video.name, video.description, video.thumbnail);
         }
-        
-        //else if (Spotify.getIdFromURL(input)) {
-        //    const track = await Spotify.download(input);
-        //    return new TrackData('spotify', YouTube.getCachePath(YouTube.getIdFromURL(input)), `https://open.spotify.com/track/${track.trackId}`, track.name, null, track.thumbnail);
-        //}
 
         /* Check if URL is SoundCloud */
         //TODO    
