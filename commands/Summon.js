@@ -22,23 +22,7 @@ class SummonCommand extends PlayerCommand {
         const audioClient = this.getAudioClientForGuild(message.guild.id);
 
         /* Join the message authors channel */
-        try {
-            Logger.getInstance().verbose('Commands', 1, `[Summon] Trying to join channel...`);
-
-            await new Promise ((resolve, reject) => {
-                joinVoiceChannel({
-                    channelId: message.member.voice.channel,
-                    guildId: message.guild.id,
-                    adapterCreator: message.guild.voiceAdapterCreator
-                })
-                .once('error', reject)
-                .once(VoiceConnectionStatus.Disconnected, reject)
-                .once(VoiceConnectionStatus.Ready, resolve);
-            })
-        } catch (e) {
-            Logger.getInstance().verbose('Commands', 1, `[Summon] Error joining the channel ${e}.`);
-        }
-        
+        audioClient.join(channel);   
         
         /* Greet the channel with a slight delay */
         setTimeout(async () => {

@@ -2,6 +2,7 @@ const Logger = require('../Services/Logger.js');
 const StreamDispatcherWrapper = require('./StreamDispatcherWrapper.js');
 const StreamDispatcherManager = require('./StreamDispatcherManager.js');
 const Queue = require('../Player/Queue.js');
+const { joinVoiceChannel, VoiceConnectionStatus } = require('@discordjs/voice');
 
 class AudioClient {
     constructor(guildId) {
@@ -26,7 +27,32 @@ class AudioClient {
 
     async join(channel) {
         /* Join the voice channel and wait for the connection */
-        this.connection = await channel.join();
+        this.connection = joinVoiceChannel({
+            channelId: channel,
+            guildId: this._guildId,
+            adapterCreator: channel.guild.voiceAdapterCreator
+        });
+
+        await new Promise ((resolve, reject) => {
+            /* Connect to the channel */
+            this.connection = joinVoiceChannel({
+                channelId: message.member.voice.channel,
+                guildId: message.guild.id,
+                adapterCreator: message.guild.voiceAdapterCreator
+            })
+
+            /* Throw on error */
+            .once('error', reject)
+
+            /* Resolve when ready */
+            .once(VoiceConnectionStatus.Ready, resolve);
+
+            /* Do not wait forever */
+            setTimeout(() => {
+                Logger.getInstance().verbose('AudioClient', 1, 'Timeout connecting to channel "' + channel.name + '"');
+                reject()
+            }, 1000 * 3);
+        })
 
         /* Set the speaking state to false initially (as nothing is playing yet) */
         this.connection.setSpeaking(0);
