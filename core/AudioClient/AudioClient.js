@@ -32,7 +32,7 @@ class AudioClient {
             this.connection = joinVoiceChannel({
                 channelId: channel,
                 guildId: channel.guild.id,
-                adapterCreator: message.guild.voiceAdapterCreator
+                adapterCreator: channel.guild.voiceAdapterCreator
             })
 
             /* Throw on error */
