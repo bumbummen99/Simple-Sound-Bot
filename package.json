@@ -29,7 +29,7 @@
     "uniqid": "^5.4.0",
     "url-status-code": "^2.0.0",
     "wikipedia": "^1.1.8",
-    "ytdl-core": "^4.11.0",
+    "youtube-dl-exec": "^2.0.12",
     "ytsr": "^3.4.0"
   },
   "devDependencies": {

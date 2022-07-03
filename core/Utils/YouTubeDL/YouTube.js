@@ -1,15 +1,14 @@
 const md5 = require('md5');
-const ytdl = require('ytdl-core');
+const youtubedl = require('youtube-dl-exec')
 const fs = require('fs')
 const path = require('path');
 const urlStatusCode = require('url-status-code')
 
 const db = require('../../../models/index.js');
 const Logger = require('../../Services/Logger.js');
-const YouTubeDL = require('./Abstracts/YouTubeDL.js');
 const ytsr = require('ytsr');
 
-class YouTube extends YouTubeDL {
+class YouTube {
 
     static async search(input) {
         /* Not an URL, search YouTube */
@@ -54,7 +53,7 @@ class YouTube extends YouTubeDL {
             Logger.getInstance().verbose('YouTubeDL', 1, '[YouTube] Video "' + id + '" not in database, retrieving information...', 'blueBright');
 
             /* Fetch the video info with youtube dl */
-            const info = await ytdl.getInfo(url);
+            const info = await youtubedl(url, { dumpSingleJson: true });
 
             /* Get corrent thumbnail url */
             let thumbnail = `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
@@ -62,11 +61,11 @@ class YouTube extends YouTubeDL {
                 thumbnail = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
             }
 
-            /* Create the model in the database */
+            ///* Create the model in the database */
             video = await db.YouTube.create({
                 videoId: id,
-                name: info.videoDetails.title,
-                description: info.videoDetails.description,
+                name: info.title,
+                description: info.description,
                 thumbnail: thumbnail,
             });
         } else {
@@ -75,7 +74,7 @@ class YouTube extends YouTubeDL {
 
         if (!fs.existsSync(YouTube.getCachePath(id))) {
             Logger.getInstance().verbose('YouTubeDL', 1, '[YouTube] Video "' + id + '" is not cached. Downloading...', 'blueBright');
-            await YouTube.ytdlPromised(url, YouTube.getCachePath(id));
+            await youtubedl.exec(url, { output: YouTube.getCachePath(id) });
         }
 
         return video;
