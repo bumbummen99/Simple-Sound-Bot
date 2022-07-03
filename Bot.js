@@ -1,4 +1,5 @@
-const { AkairoClient, CommandHandler, ListenerHandler } = require('discord-akairo');
+const { AkairoClient, CommandHandler, ListenerHandler, Intents } = require('discord-akairo');
+const { Intents } = require('discord.js');
 
 class Bot extends AkairoClient {
     constructor() {
@@ -10,7 +11,12 @@ class Bot extends AkairoClient {
         }
 
         super(akairoOptions, {
-            // Options for discord.js goes here.
+            intents: [
+                Intents.FLAGS.GUILDS,
+                Intents.FLAGS.GUILD_MEMBERS,
+                Intents.FLAGS.GUILD_MESSAGES,
+                Intents.FLAGS.GUILD_VOICE_STATES
+            ]
         });
 
         /* Setup the command handler */
