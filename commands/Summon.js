@@ -22,7 +22,7 @@ class SummonCommand extends PlayerCommand {
         const audioClient = this.getAudioClientForGuild(message.guild.id);
 
         /* Join the message authors channel */
-        audioClient.join(channel);   
+        audioClient.join(message.member.voice.channel);   
         
         /* Greet the channel with a slight delay */
         setTimeout(async () => {
