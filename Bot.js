@@ -1,4 +1,4 @@
-const { AkairoClient, CommandHandler, ListenerHandler } = require('discord-akairo');
+const { AkairoClient, CommandHandler, ListenerHandler } = require('@skyraptor/discord-akairo');
 const { Intents } = require('discord.js');
 
 class Bot extends AkairoClient {

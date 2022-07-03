@@ -1,4 +1,4 @@
-const { Command } = require('discord-akairo');
+const { Command } = require('@skyraptor/discord-akairo');
 
 class Ping extends Command {
     constructor() {

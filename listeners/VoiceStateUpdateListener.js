@@ -1,4 +1,4 @@
-const { Listener } = require('discord-akairo');
+const { Listener } = require('@skyraptor/discord-akairo');
 const AudioClient = require('../core/AudioClient/AudioClient');
 const GuildsManger = require('../core/AudioClient/GuildsManger');
 const Logger = require('../core/Services/Logger');

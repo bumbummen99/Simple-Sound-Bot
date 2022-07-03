@@ -1,4 +1,4 @@
-const { Listener } = require('discord-akairo');
+const { Listener } = require('@skyraptor/discord-akairo');
 const Logger = require('../core/Services/Logger');
 
 class VoiceStateUpdateListener extends Listener {

@@ -1,4 +1,4 @@
-const { Listener } = require('discord-akairo');
+const { Listener } = require('@skyraptor/discord-akairo');
 
 class VoiceStateUpdateListener extends Listener {
     constructor() {

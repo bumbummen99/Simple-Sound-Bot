@@ -1,4 +1,4 @@
-const { Command } = require('discord-akairo');
+const { Command } = require('@skyraptor/discord-akairo');
 const Logger = require('../Services/Logger');
 
 class AbstractCommand extends Command {
