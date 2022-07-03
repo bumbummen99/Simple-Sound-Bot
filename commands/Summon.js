@@ -31,6 +31,7 @@ class SummonCommand extends PlayerCommand {
                     guildId: message.guild.id,
                     adapterCreator: message.guild.voiceAdapterCreator
                 })
+                .once('error', reject)
                 .once(VoiceConnectionStatus.Disconnected, reject)
                 .once(VoiceConnectionStatus.Ready, resolve);
             })
