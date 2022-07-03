@@ -26,18 +26,12 @@ class AudioClient {
     }
 
     async join(channel) {
-        /* Join the voice channel and wait for the connection */
-        this.connection = joinVoiceChannel({
-            channelId: channel,
-            guildId: this._guildId,
-            adapterCreator: channel.guild.voiceAdapterCreator
-        });
-
+        /* Join the voice channel and wait for the connection to be ready*/
         await new Promise ((resolve, reject) => {
             /* Connect to the channel */
             this.connection = joinVoiceChannel({
-                channelId: message.member.voice.channel,
-                guildId: message.guild.id,
+                channelId: channel,
+                guildId: channel.guild.id,
                 adapterCreator: message.guild.voiceAdapterCreator
             })
 
