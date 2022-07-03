@@ -1,6 +1,7 @@
 const PollyTTS = require('../core/Utils/PollyTTS.js');
 const Logger = require('../core/Services/Logger.js');
 const PlayerCommand = require('../core/Commands/PlayerCommand.js');
+const { joinVoiceChannel, VoiceConnectionStatus } = require('@discordjs/voice');
 
 class SummonCommand extends PlayerCommand {
     constructor() {
@@ -21,8 +22,16 @@ class SummonCommand extends PlayerCommand {
         const audioClient = this.getAudioClientForGuild(message.guild.id);
 
         /* Join the message authors channel */
-        await audioClient.join(message.member.voice.channel);
-
+        await new Promise ((resolve, reject) => {
+            joinVoiceChannel({
+                channelId: message.member.voice.channel,
+                guildId: message.guild.id,
+                adapterCreator: message.guild.voiceAdapterCreator
+            })
+            .once(VoiceConnectionStatus.Disconnected, reject)
+            .once(VoiceConnectionStatus.Ready, resolve);
+        })
+        
         /* Greet the channel with a slight delay */
         setTimeout(async () => {
             audioClient.playBetween(await PollyTTS.generate(process.env.GREET_TEMPLATE));
