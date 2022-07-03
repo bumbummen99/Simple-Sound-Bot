@@ -23,6 +23,8 @@ class SummonCommand extends PlayerCommand {
 
         /* Join the message authors channel */
         try {
+            Logger.getInstance().verbose('Commands', 1, `[Summon] Trying to join channel...`);
+
             await new Promise ((resolve, reject) => {
                 joinVoiceChannel({
                     channelId: message.member.voice.channel,
