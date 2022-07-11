@@ -1,6 +1,8 @@
 # Simple Sound-Bot
 Yes, another Discord music bot! But this one is supposed to be simple and to allow you to play music and text using text to speech. It also does have some extra functionality like reading Wikipedia articles.
 
+**This is the old version of the bot. Check [Simple Sound Bot 2](https://github.com/bumbummen99/Simple-Sound-Bot-2) for a updated version.**
+
 # Features
 - [x] Simple YouTube-Audio player with queue and repeat
 - [x] Text To Speech functionality using AWS Polly
