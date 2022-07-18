@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@discordjs/opus": "^0.7.0",
-    "@discordjs/voice": "^0.10.0",
+    "@discordjs/voice": "^0.11.0",
     "@skyraptor/discord-akairo": "^8.1.0",
     "arg": "^5.0.1",
     "aws-sdk": "^2.1123.0",
